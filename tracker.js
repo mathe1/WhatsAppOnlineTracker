@@ -9,7 +9,6 @@ var ToolsClass = "_3nq_A"; //div for right side at 3dots
 
 var isOnline = 0;
 var logged = 0;
-var delay = 0; //between Label "writing..." and "online" and none
 
 var last_time;
 var offtime = new Date();
@@ -37,9 +36,9 @@ try {
 function SetStatus(x) {
  var v=document.getElementsByClassName(ToolsClass)[0];
  if (v != undefined) {
-  var s=v.innerHTML;
+  var s=v.firstElementChild.innerHTML;
   if (s.substr(0,1)!='<') s=s.substr(s.indexOf('<'));
-  v.innerHTML = x+s;
+  v.firstElementChild.innerHTML = x+s;
  }
 }
 
@@ -85,8 +84,12 @@ setInterval(function() {
    var act_contact = ctc[0].firstElementChild.firstElementChild.firstElementChild.title;
   } catch(err) {var act_contact = 'Nobody';} 
 
+  //Read Status: nothing or 'online' (also when 'writing...')
   var last_seen = document.getElementsByClassName(OnlineLabelClass);
-  if (last_seen.length > 0) last_seen_act = last_seen[0].title; else last_seen_act='';
+  if (last_seen.length > 0) {
+    var s=last_seen[0].innerText; 
+    if (s == 'online' || s.indexOf('...')>0 ) last_seen_act='online';
+  } else last_seen_act=''; 
 
 	if (last_contact != act_contact) // contact changed or initial
   { var logs=' now monitoring '+act_contact;
@@ -103,12 +106,11 @@ setInterval(function() {
      consolelog(time + ' ' + act_contact + ' is online');
      logged=1;
      isOnline=1;
-     delay = 2;
     }
   }    
   //now check if online
   //check status changed
-  if (isOnline == 0 && last_seen_act=='online') { //Status online		
+  if (isOnline == 0 && last_seen_act=='online') { //Status online	or writing...	
 		    last_time = new Date(date);
         var tdif=get_time_diff(0); 
         if (tdif !='0' && logged == 1) {      
@@ -119,33 +121,29 @@ setInterval(function() {
         else {
          consolelog(time + ' ' + act_contact + ' is back / online');
         } 
+        SetStatus('Coming online'+tdif);
         _play('online');
        logged=1;
 		   isOnline = 1;
-       delay = 2;
     }  
   else 
    if (isOnline>0) SetStatus('Online '+get_time_diff(3)); 
    else SetStatus('Offline '+offtimelabel+get_time_diff(2));
   
-  if ( last_seen_act.indexOf(':') <0 && last_seen_act.indexOf('...') <0 && last_seen_act.length !=6 && isOnline > 0) { //Status offline		
-		if (delay == 2) {
-      offtime = new Date();
-      offtimelabel = ('0'+offtime.getHours()).slice(-2) + ':' + ('0'+offtime.getMinutes()).slice(-2) + ':' + ('0'+offtime.getSeconds()).slice(-2);
-    } 
-
-    delay--;
-    if (delay < 1) {
-			isOnline = 0;
-      last_seen_last = last_seen_act;
-      var dif = get_time_diff(1);
-      if (dif !=0) {
-  			consolelog(time + ' offline' + dif);
-  			consolelog('------------------');
-        _play('offline');
-      }
-    } 
-	} else delay=2; 
+  if ( last_seen_act.length == 0 && isOnline > 0) { 
+    //no Label, but was Online => Status offline		
+    offtime = new Date();
+    offtimelabel = ('0'+offtime.getHours()).slice(-2) + ':' + ('0'+offtime.getMinutes()).slice(-2) + ':' + ('0'+offtime.getSeconds()).slice(-2);
+		isOnline = 0;
+    last_seen_last = last_seen_act;
+    var dif = get_time_diff(1);
+    if (dif !=0) {
+			consolelog(time + ' offline' + dif);
+			consolelog('------------------');
+      SetStatus('Left'+dif);
+      _play('offline');
+    }
+	} 
    
     last_contact=act_contact;
     last_seen_last=last_seen_act;
