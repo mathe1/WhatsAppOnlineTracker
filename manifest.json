@@ -1,0 +1,25 @@
+{
+  "name": "WhatsAppOnlineTracker",
+  "version": "1",
+  "description": "https://github.com/mathe1/WhatsAppOnlineTracker",
+  "permissions": ["declarativeContent", "activeTab", "storage"  ],
+  "background": {
+    "scripts": ["tracker.js"],
+    "persistent": false
+  },
+  "web_accessible_resources" : ["audios/online.mp3","audios/offline.mp3","audios/alert.mp3"],
+  "manifest_version": 2,
+  "icons": {
+    "16": "images/icon_16x.png",
+    "32": "images/icon_32x.png",
+    "48": "images/icon_48x.png",
+    "128": "images/icon_128x.png"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://web.whatsapp.com/*"],
+      "js": [ "tracker.js" ],
+      "run_at": "document_end"
+    } ]
+
+}
