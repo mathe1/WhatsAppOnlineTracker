@@ -27,6 +27,11 @@ extsrc=extsrc[2];
 
 /*
 // need to rethink
+var meta = document.createElement("meta");
+meta.setAttribute("http-equiv", "Content-Security-Policy");
+meta.setAttribute("content", "connect-src 'self' ws://localhost:8080;");
+document.getElementsByTagName('head')[0].appendChild(meta);
+
 try {
  var sock = new WebSocket('ws://localhost:8080/','watrack');
  sock.onmessage = function(e) {console.log("Socket: "+e);}
@@ -89,6 +94,7 @@ setInterval(function() {
   if (last_seen.length > 0) {
     var s=last_seen[0].innerText; 
     if (s == 'online' || s.indexOf('...')>0 ) last_seen_act='online';
+    else last_seen_act=s;
   } else last_seen_act=''; 
 
 	if (last_contact != act_contact) // contact changed or initial
