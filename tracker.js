@@ -1,4 +1,4 @@
-// https://github.com/mathe1/WhatsAppOnlineTracker
+﻿// https://github.com/mathe1/WhatsAppOnlineTracker
 
 // Edit the Classnames when script don't work
 // OnlineLabelClass is there in the headline under the contact's name
@@ -93,8 +93,10 @@ setInterval(function() {
   var last_seen = document.getElementsByClassName(OnlineLabelClass);
   if (last_seen.length > 0) {
     var s=last_seen[0].innerText; 
-    if (s == 'online' || s.indexOf('...')>0 ) last_seen_act='online';
-    else last_seen_act=s;
+    last_seen_act='';
+    if (s == 'online') last_seen_act='online';
+    if (s.indexOf('...')>0) last_seen_act='online'; //old
+    if (s.indexOf('…')>0) last_seen_act='online';   //new
   } else last_seen_act=''; 
 
 	if (last_contact != act_contact) // contact changed or initial
@@ -136,7 +138,7 @@ setInterval(function() {
    if (isOnline>0) SetStatus('Online '+get_time_diff(3)); 
    else SetStatus('Offline '+offtimelabel+get_time_diff(2));
   
-  if ( last_seen_act.length == 0 && isOnline > 0) { 
+  if ( last_seen_act == '' && isOnline > 0) { 
     //no Label, but was Online => Status offline		
     offtime = new Date();
     offtimelabel = ('0'+offtime.getHours()).slice(-2) + ':' + ('0'+offtime.getMinutes()).slice(-2) + ':' + ('0'+offtime.getSeconds()).slice(-2);
