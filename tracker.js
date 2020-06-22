@@ -1,11 +1,13 @@
 ﻿// https://github.com/mathe1/WhatsAppOnlineTracker
-
+// Android-WA 2.20.189 - web 2.2025.6
 // Edit the Classnames when script don't work
 // OnlineLabelClass is there in the headline under the contact's name
 // ContactNameClass is right from the contact's profile picture in the headline
 var OnlineLabelClass = "_3-cMa"; //until 10.06.2020 "O90ur"; 
 var ContactNameClass = "_33QME"; //until 10.06.2020 "_5SiUq";
 var ToolsClass = "_3nq_A"; //div for right side at 3dots
+var SeenClassContainer = "_13opk"; //highlighted contact.. has seen the message
+var SeenClass = "_2RFeE"; //checks are blue
 
 var isOnline = 0;
 var logged = 0;
@@ -20,11 +22,17 @@ var last_seen_act = '';
 var last_contact ='.';
 var act_contact ='';
 
+var msg_seen = 0;
+
 //get the extension ID for Audios
 var extsrc=chrome.extension.getURL('/tracker.js');
 extsrc=extsrc.split('/');
 extsrc=extsrc[2];
 
+var t=document.scripts[document.scripts.length-1].text;
+    t=t.slice(t.indexOf("crashlogs")-40,t.indexOf("crashlogs"));
+    t=t.slice(t.indexOf("s=")+3,t.indexOf("\",u="));
+console.log("WhatsApp Version: "+t);    
 /*
 // need to rethink
 var meta = document.createElement("meta");
@@ -83,7 +91,19 @@ function get_time_diff(mode) {
 setInterval(function() {
   var date = new Date();
   var time = ('0'+date.getHours()).slice(-2) + ':' + ('0'+date.getMinutes()).slice(-2) + ':' + ('0'+date.getSeconds()).slice(-2);
-
+  
+  var msgcheck=document.getElementsByClassName(SeenClassContainer);
+  if (msgcheck.length>0 && msg_seen==0) {
+    if (msgcheck[0].getElementsByClassName(SeenClass).length>0) {
+     msg_seen=1;
+     _play("note");
+    }
+  } 
+  else 
+   if (msgcheck.length==0) msg_seen=0;
+   else
+     if (msgcheck[0].getElementsByClassName(SeenClass).length==0) msg_seen=0;
+      
   try {
    var ctc = document.getElementsByClassName(ContactNameClass);
    var act_contact = ctc[0].firstElementChild.firstElementChild.firstElementChild.title;
@@ -96,7 +116,10 @@ setInterval(function() {
     last_seen_act='';
     if (s == 'online') last_seen_act='online';
     if (s.indexOf('...')>0) last_seen_act='online'; //old
-    if (s.indexOf('…')>0) last_seen_act='online';   //new
+    if (s.indexOf('…')>0) {
+     last_seen_act='online';   //new
+     if (s.indexOf('udio')<1) _play("writing"); //no Audio recording..., but writing...
+    }
   } else last_seen_act=''; 
 
 	if (last_contact != act_contact) // contact changed or initial
