@@ -2,7 +2,9 @@
 This extension looking for the "online" label of a single selected contact and logs the times to the console of the DevTools in your browser.
 This is a rebuilt from my works on [WhatsAllApp](https://github.com/mathe1/WhatsAllApp-Mod) and [WhatsappTracker](https://github.com/mathe1/WhatsappTracker).
 
-- It plays an audio signal when the contact comes online and when left.
+- It plays an audio signal when the contact comes online and when left. 
+- It also plays an audio signal when the contact has seen your message (if blue checks are enabled, v1.1)
+- And now (v1.1) you can hear it when the contact writes his message.
 - It displays also in the right edge of the chat header some information:
 
 While contact is online:
@@ -41,3 +43,4 @@ Example:
 ### Working on:
 - Manage more than one contact, remember times when select another contact and come back.
 - Save Logdata to a local file and read in a graphical tool for analyse the times over the day
+- Log and audio for "Detect phone is not connected"
