@@ -6,6 +6,7 @@ This is a rebuilt from my works on [WhatsAllApp](https://github.com/mathe1/Whats
 - It also plays an audio signal when the contact has seen your message (if blue checks are enabled, v1.1)
 - And now (v1.1) you can hear it when the contact writes his message.
 - plays an audio signal when phone is disconnected and log that period (v1.2)
+- Autolog the console.logs to local daily file (v1.3) - this requires a local http-server with running PHP (read details in index.php at folder "localhost").
 - It displays also in the right edge of the chat header some information:
 
 While contact is online:
@@ -43,4 +44,4 @@ Example:
 
 ### Working on:
 - Manage more than one contact, remember times when select another contact and come back.
-- Save Logdata to a local file and read in a graphical tool for analyse the times over the day
+- a graphical tool for analyse the times over the day, coming soon
