@@ -28,27 +28,14 @@ var act_contact ='';
 
 var msg_seen = 0;
 
+//For logging at localhost
+var autolog = true;
+var xhr = new XMLHttpRequest(); 
+
 //get the extension ID for Audios
 var extsrc=chrome.extension.getURL('/tracker.js');
 extsrc=extsrc.split('/');
 extsrc=extsrc[2];
-
-var t=document.scripts[document.scripts.length-1].text;
-    t=t.slice(t.indexOf("crashlogs")-40,t.indexOf("crashlogs"));
-    t=t.slice(t.indexOf("s=")+3,t.indexOf("\",u="));
-console.log("WhatsApp Version: "+t);    
-/*
-// need to rethink
-var meta = document.createElement("meta");
-meta.setAttribute("http-equiv", "Content-Security-Policy");
-meta.setAttribute("content", "connect-src 'self' ws://localhost:8080;");
-document.getElementsByTagName('head')[0].appendChild(meta);
-
-try {
- var sock = new WebSocket('ws://localhost:8080/','watrack');
- sock.onmessage = function(e) {console.log("Socket: "+e);}
-} catch(err) {console.log("Sockets can't open.");}
-*/
 
 function SetStatus(x) {
  var v=document.getElementsByClassName(ToolsClass)[0];
@@ -67,8 +54,13 @@ function _play(status) {
 
 function consolelog(msg) {
  console.log(msg);
-// maybe could log to file by a socketserver 
-// if (sock.readyState==sock.OPEN) sock.send(msg); 
+ if (autolog) {
+ //This needs a running http-server with PHP at localhost. It calls a php-script to write the log-file on local HDD. 
+  var xhr = new XMLHttpRequest(); 
+  xhr.open("GET", "http://localhost?"+encodeURI(msg));
+  if (xhr.readyState==xhr.OPENED) xhr.send();
+  else autolog=false; //no log-server online 
+ }
 }
 
 function get_time_diff(mode) {
@@ -200,3 +192,10 @@ setInterval(function() {
     last_seen_last=last_seen_act;
     
 }, 1000);
+
+//some inits
+var t=document.scripts[document.scripts.length-1].text;
+    t=t.slice(t.indexOf("crashlogs")-40,t.indexOf("crashlogs"));
+    t=t.slice(t.indexOf("s=")+3,t.indexOf("\",u="));
+consolelog("WhatsApp Version: "+t);
+if (autolog) console.log("Autolog active"); else console.log("Autolog not available");    

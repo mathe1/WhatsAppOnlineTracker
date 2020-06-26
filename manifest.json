@@ -1,8 +1,8 @@
 {
   "name": "WhatsAppOnlineTracker",
-  "version": "1.2",
+  "version": "1.3",
   "description": "https://github.com/mathe1/WhatsAppOnlineTracker",
-  "permissions": ["declarativeContent", "activeTab", "storage"  ],
+  "permissions": ["declarativeContent", "activeTab", "storage","http://localhost/*"],
   "background": {
     "scripts": ["tracker.js"],
     "persistent": false
