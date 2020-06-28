@@ -6,7 +6,7 @@ This is a rebuilt from my works on [WhatsAllApp](https://github.com/mathe1/Whats
 - It also plays an audio signal when the contact has seen your message (if blue checks are enabled, v1.1)
 - And now (v1.1) you can hear it when the contact writes his message.
 - plays an audio signal when phone is disconnected and log that period (v1.2)
-- Autolog the console.logs to local daily file (v1.3) - this requires a local http-server with running PHP (read details in index.php at folder "localhost").
+- Autolog the console.logs to local daily file (v1.3) - this requires a local http-server with running PHP (read details in index.php at folder "localhost"). Updated for use with/on a webserver (v1.3.1).
 - It displays also in the right edge of the chat header some information:
 
 While contact is online:
@@ -29,8 +29,10 @@ Offline 15:18:21 since 74 Minutes, 8 Secounds.
 
 Example:
 ```
-14:18:54 now monitoring Nobody
-14:19:23 now monitoring Girl
+10:18:54 now monitoring Nobody
+10:19:23 now monitoring Girl
+11:23:57 ⚠️ phone disconnected
+11:24:28 ⚠️ alert finished after 30 Seconds.
 14:34:55 Girl is back / online
 14:35:18 offline after 23 Seconds.
 ------------------
@@ -42,6 +44,8 @@ Example:
 ------------------
 ```
 
+You may use this [graphical Log-Analyser Tool](https://mathesoft.eu/software/whatsapponlinetracker-analyser/) to show the timeline of the logfile.
+
 ### Working on:
 - Manage more than one contact, remember times when select another contact and come back.
-- a graphical tool for analyse the times over the day, coming soon
+
