@@ -11,6 +11,12 @@ var SeenClassContainer = "_13opk"; //highlighted contact.. has seen the message
 var SeenClass = "_2RFeE"; //checks are blue
 var phonestatusClass = "_2vbYK"; // shows the sign and yellow "disconnected" hint 
 
+//you may also use your own webspace for central logging
+var xhrURL="http://localhost?";
+//set any authorisation when use an online webserver, so avoid false data
+//this "hash" write also inside the index.php, else no logging 
+var hash="711vJy&";
+
 var isOnline = 0;
 var logged = 0;
 var phonealert = -1;
@@ -57,9 +63,12 @@ function consolelog(msg) {
  if (autolog) {
  //This needs a running http-server with PHP at localhost. It calls a php-script to write the log-file on local HDD. 
   var xhr = new XMLHttpRequest(); 
-  xhr.open("GET", "http://localhost?"+encodeURI(msg));
+  xhr.open("GET", xhrURL+hash+encodeURI(msg));
   if (xhr.readyState==xhr.OPENED) xhr.send();
-  else autolog=false; //no log-server online 
+  else {
+   autolog=false; //no log-server online
+   console.log('⚠️ Autolog disabled!')
+  }  
  }
 }
 
