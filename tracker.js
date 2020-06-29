@@ -12,7 +12,13 @@ var SeenClass = "_2RFeE"; //checks are blue
 var phonestatusClass = "_2vbYK"; // shows the sign and yellow "disconnected" hint 
 
 //you may also use your own webspace for central logging
+//Set to false, if not wished
 var xhrURL="http://localhost?";
+var autolog_local = true;
+
+var xhrURLw="https://your-webspace.xyz?";
+var autolog_web = true;
+
 //set any authorisation when use an online webserver, so avoid false data
 //this "hash" write also inside the index.php, else no logging 
 var hash="711vJy&";
@@ -33,10 +39,6 @@ var last_contact ='.';
 var act_contact ='';
 
 var msg_seen = 0;
-
-//For logging at localhost
-var autolog = true;
-var xhr = new XMLHttpRequest(); 
 
 //get the extension ID for Audios
 var extsrc=chrome.extension.getURL('/tracker.js');
@@ -60,14 +62,26 @@ function _play(status) {
 
 function consolelog(msg) {
  console.log(msg);
- if (autolog) {
- //This needs a running http-server with PHP at localhost. It calls a php-script to write the log-file on local HDD. 
+ if (autolog_local) {
+ //This needs a running local http-server with PHP on your PC
+ //It calls a php-script to write the log-file on local HDD. 
   var xhr = new XMLHttpRequest(); 
   xhr.open("GET", xhrURL+hash+encodeURI(msg));
   if (xhr.readyState==xhr.OPENED) xhr.send();
   else {
-   autolog=false; //no log-server online
-   console.log('⚠️ Autolog disabled!')
+   autolog_local=false; //no log-server online
+   console.log('⚠️Local Autolog disabled!')
+  }  
+ } 
+ if (autolog_web) {
+ //This needs an own webspace
+ //It calls a php-script to write the log-file on your websapce. 
+  var xhro = new XMLHttpRequest(); 
+  xhro.open("GET", xhrURLw+hash+encodeURI(msg));
+  if (xhro.readyState==xhr.OPENED) xhro.send();
+  else {
+   autolog_web=false; //no log-server online
+   console.log('⚠️Online Autolog disabled!')
   }  
  }
 }
@@ -89,8 +103,9 @@ function get_time_diff(mode) {
 	else { var FinalTime = ' - back after '; }
 
     if (MINUTES != 0) { FinalTime = FinalTime + MINUTES + ' Minutes, ';}
+  if (SECONDS==0 && MINUTES==0) SECONDS=1; //but there was anything.. 
     FinalTime += SECONDS + ' Seconds.';
-  if (SECONDS==0 && MINUTES==0) return '0'; else return FinalTime;
+  return FinalTime;
 }
 
 setInterval(function() {
@@ -165,7 +180,7 @@ setInterval(function() {
   if (isOnline == 0 && last_seen_act=='online') { //Status online	or writing...	
 		    last_time = new Date(date);
         var tdif=get_time_diff(0); 
-        if (tdif !='0' && logged == 1) {      
+        if (logged == 1) {      
 		     if (last_contact == act_contact) { //contact returns
           consolelog(time + ' ' + act_contact + tdif);
          }
@@ -189,12 +204,12 @@ setInterval(function() {
 		isOnline = 0;
     last_seen_last = last_seen_act;
     var dif = get_time_diff(1);
-    if (dif !=0) {
+    //if (dif !=0) {
 			consolelog(time + ' offline' + dif);
 			consolelog('------------------');
       SetStatus('Left'+dif);
       _play('offline');
-    }
+    //}
 	} 
    
     last_contact=act_contact;
@@ -203,8 +218,10 @@ setInterval(function() {
 }, 1000);
 
 //some inits
+//Show WA-web version
 var t=document.scripts[document.scripts.length-1].text;
     t=t.slice(t.indexOf("crashlogs")-40,t.indexOf("crashlogs"));
     t=t.slice(t.indexOf("s=")+3,t.indexOf("\",u="));
-consolelog("WhatsApp Version: "+t);
-if (autolog) console.log("Autolog active"); else console.log("Autolog not available");    
+consolelog("WhatsApp-web Version: "+t);
+if (autolog_local) console.log("✔️Local Autolog active"); else console.log("❌ Local Autolog not available");    
+if (autolog_web)   console.log("✔️Web Autolog active"); else console.log("❌ Web Autolog not available");    
