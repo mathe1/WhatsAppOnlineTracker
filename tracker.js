@@ -78,7 +78,7 @@ function consolelog(msg) {
  //It calls a php-script to write the log-file on your websapce. 
   var xhro = new XMLHttpRequest(); 
   xhro.open("GET", xhrURLw+hash+encodeURI(msg));
-  if (xhro.readyState==xhr.OPENED) xhro.send();
+  if (xhro.readyState==xhro.OPENED) xhro.send();
   else {
    autolog_web=false; //no log-server online
    console.log('⚠️Online Autolog disabled!')
