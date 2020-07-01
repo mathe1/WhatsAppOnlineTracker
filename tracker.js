@@ -245,5 +245,5 @@ setInterval(function() {
 //Show WA-web version
 var t=document.scripts[document.scripts.length-1].text;
     t=t.slice(t.indexOf("crashlogs")-40,t.indexOf("crashlogs"));
-    t=t.slice(t.indexOf("s=")+3,t.indexOf("\",u="));
+    t=t.slice(t.indexOf("=")+2,t.indexOf('",',t));
 consolelog("WhatsApp-web Version: "+t);
