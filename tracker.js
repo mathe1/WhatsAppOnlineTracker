@@ -23,6 +23,9 @@ var autolog_web = true;
 //this "hash" write also inside the index.php, else no logging 
 var hash="711vJy&";
 
+var autolog_Lchecked=false;
+var autolog_Wchecked=false;
+
 var isOnline = 0;
 var logged = 0;
 var phonealert = -1;
@@ -66,23 +69,44 @@ function consolelog(msg) {
  //This needs a running local http-server with PHP on your PC
  //It calls a php-script to write the log-file on local HDD. 
   var xhr = new XMLHttpRequest(); 
+  xhr.onerror = function(){
+   console.log('⚠️Local Autolog Error!');
+   _play('alert');
+  }  
+  xhr.onreadystatechange = function() {
+    if (!autolog_Lchecked && xhr.readyState == xhr.DONE) {
+     autolog_Lchecked=true;
+     if (xhr.status == 200) console.log("✔️Local Autolog active"); 
+     else {
+      console.log("❌ Local Autolog not available");
+      autolog_local=false; //no log-server online
+     }    
+    }
+  }
   xhr.open("GET", xhrURL+hash+encodeURI(msg));
   if (xhr.readyState==xhr.OPENED) xhr.send();
-  else {
-   autolog_local=false; //no log-server online
-   console.log('⚠️Local Autolog disabled!')
-  }  
- } 
+ }
+  
  if (autolog_web) {
  //This needs an own webspace
  //It calls a php-script to write the log-file on your websapce. 
   var xhro = new XMLHttpRequest(); 
+  xhro.onerror = function(){
+   console.log('⚠️Online Autolog Error!');
+   _play('alert');
+  }  
+  xhro.onreadystatechange = function() {
+    if (!autolog_Wchecked && xhro.readyState == xhro.DONE) {
+     autolog_Wchecked=true;
+     if (xhro.status == 200) console.log("✔️Online Autolog active"); 
+     else {
+      console.log("❌ Online Autolog not available");   
+      autolog_web=false; //no log-server online
+     } 
+    }
+  }
   xhro.open("GET", xhrURLw+hash+encodeURI(msg));
   if (xhro.readyState==xhro.OPENED) xhro.send();
-  else {
-   autolog_web=false; //no log-server online
-   console.log('⚠️Online Autolog disabled!')
-  }  
  }
 }
 
@@ -143,7 +167,7 @@ setInterval(function() {
   try {
    var ctc = document.getElementsByClassName(ContactNameClass);
    var act_contact = ctc[0].firstElementChild.firstElementChild.firstElementChild.title;
-  } catch(err) {var act_contact = 'Nobody';} 
+  } catch(err) {var act_contact = 'started!';} 
 
   //Read Status: nothing or 'online' (also when 'writing...')
   var last_seen = document.getElementsByClassName(OnlineLabelClass);
@@ -223,5 +247,3 @@ var t=document.scripts[document.scripts.length-1].text;
     t=t.slice(t.indexOf("crashlogs")-40,t.indexOf("crashlogs"));
     t=t.slice(t.indexOf("s=")+3,t.indexOf("\",u="));
 consolelog("WhatsApp-web Version: "+t);
-if (autolog_local) console.log("✔️Local Autolog active"); else console.log("❌ Local Autolog not available");    
-if (autolog_web)   console.log("✔️Web Autolog active"); else console.log("❌ Web Autolog not available");    
