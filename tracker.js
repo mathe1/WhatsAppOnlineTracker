@@ -1,5 +1,5 @@
 ﻿// https://github.com/mathe1/WhatsAppOnlineTracker
-// Android-WA 2.20.189 - web 2.2025.6
+// Android-WA 2.20.189 - web 2.2027.10
 // Edit the Classnames when script don't work
 // OnlineLabelClass is there in the headline under the contact's name
 // ContactNameClass is right from the contact's profile picture in the headline
@@ -51,9 +51,15 @@ extsrc=extsrc[2];
 function SetStatus(x) {
  var v=document.getElementsByClassName(ToolsClass)[0];
  if (v != undefined) {
-  var s=v.firstElementChild.innerHTML;
-  if (s.substr(0,1)!='<') s=s.substr(s.indexOf('<'));
-  v.firstElementChild.innerHTML = x+s;
+  var a=document.getElementById('WAOT');
+  if (a) a.innerHTML = x;
+  else {
+   var b=document.createElement("div");
+   b.id="WAOT";
+   b.innerHTML=x;
+   var s=v.firstElementChild;
+   s.insertBefore(b,s.childNodes[0]);
+  }
  }
 }
 
