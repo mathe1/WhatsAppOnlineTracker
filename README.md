@@ -25,12 +25,7 @@ Offline 15:18:21 since 74 Minutes, 8 Secounds.
 - open the Devtools for this website
 - go to console tab
 
-##### Hint: if you use the webserver logging, you have to add your web-address to the ***manifest.json***
-(the web-address where you store the index.php: e.g. at example.com).
-You can replace the localhost, but also you can add the second address... It should be the same address like inside the tracker.js
-```
-  "permissions": ["declarativeContent", "activeTab", "storage","http://localhost/*","https://example.com/*"],
-```
+##### Hint: you may use the webserver logging...
 Then maybe there will show a warning in the console about cookies and "SameSite"-attribute. I don't know, why - I think, you can ignore that.
 
 ##### Hint: It sometimes need update the Classnames when there is an update of WhatsappApp.
