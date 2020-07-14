@@ -144,7 +144,9 @@ setInterval(function() {
   
   //check phone status maybe disconnected and log that 
   var phonestatus=document.getElementsByClassName(phonestatusClass)[0]; 
-  if (phonestatus) if (phonestatus.firstElementChild.dataset.icon=='alert-phone') {
+  if (phonestatus) 
+   if (phonestatus.firstElementChild.dataset.icon=='alert-phone' || phonestatus.firstElementChild.dataset.icon=='alert-computer') 
+   {
     if (phonealert < 1) {
      _play('alert'); 
      if (phonealert < 0) { 
@@ -158,7 +160,7 @@ setInterval(function() {
     } else phonealert--; 
     SetStatus('⚠️ Disconnected '+offtimelabel+get_time_diff(2));
     return
-  }
+   }
   if (phonealert>0) { consolelog(time+' ⚠️ alert finished'+get_time_diff(1)); phonealert = -1; offtime = last_time_backup; }
   
   var msgcheck=document.getElementsByClassName(SeenClassContainer);
