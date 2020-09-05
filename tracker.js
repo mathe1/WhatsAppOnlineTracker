@@ -1,5 +1,5 @@
 ﻿// https://github.com/mathe1/WhatsAppOnlineTracker
-// Android-WA 2.20.189 - web 2.2027.10
+// Android-WA 2.20.198.15 - web 2.2035.14
 // Edit the Classnames when script don't work
 // OnlineLabelClass is there in the headline under the contact's name
 // ContactNameClass is right from the contact's profile picture in the headline
@@ -10,6 +10,7 @@ var ToolsClass = "_3nq_A"; //div for right side at 3dots
 var SeenClassContainer = "_13opk"; //highlighted contact.. has seen the message
 var SeenClass = "_2RFeE"; //checks are blue
 var phonestatusClass = "_2vbYK"; // shows the sign and yellow "disconnected" hint 
+var forDesktopClass = "_1evad"; //alert but only for desktop notification
 
 //you may also use your own webspace for central logging
 //Set to false, if not wished
@@ -69,7 +70,7 @@ function _play(status) {
  new Audio(url).play();
 }
 
-function consolelog(msg) {
+function consolelog(msg,silent) {
  console.log(msg);
  if (autolog_local) {
  //This needs a running local http-server with PHP on your PC
@@ -77,7 +78,7 @@ function consolelog(msg) {
   var xhr = new XMLHttpRequest(); 
   xhr.onerror = function(){
    console.log('⚠️Local Autolog Error!');
-   _play('alert');
+   if (!silent) _play('alert');
   }  
   xhr.onreadystatechange = function() {
     if (!autolog_Lchecked && xhr.readyState == xhr.DONE) {
@@ -85,7 +86,7 @@ function consolelog(msg) {
      if (xhr.status == 200) console.log("✔️Local Autolog active"); 
      else {
       console.log("❌ Local Autolog not available");
-      autolog_local=false; //no log-server online
+      autolog_local=false; //switch off local logging
      }    
     }
   }
@@ -107,7 +108,7 @@ function consolelog(msg) {
      if (xhro.status == 200) console.log("✔️Online Autolog active"); 
      else {
       console.log("❌ Online Autolog not available");   
-      autolog_web=false; //no log-server online
+      autolog_web=false; //switch off online logging
      } 
     }
   }
@@ -142,16 +143,18 @@ setInterval(function() {
   var date = new Date();
   var time = ('0'+date.getHours()).slice(-2) + ':' + ('0'+date.getMinutes()).slice(-2) + ':' + ('0'+date.getSeconds()).slice(-2);
   
-  //check phone status maybe disconnected and log that 
+  //check phone status maybe disconnected and log that   
   var phonestatus=document.getElementsByClassName(phonestatusClass)[0]; 
-  if (phonestatus) 
-   if (phonestatus.firstElementChild.dataset.icon=='alert-phone' || phonestatus.firstElementChild.dataset.icon=='alert-computer') 
+  var hinttype=document.getElementsByClassName(forDesktopClass)[0];
+  if (phonestatus && !hinttype) {
+   let alertStatus=phonestatus.firstElementChild.dataset.icon;
+   if (alertStatus!='') 
    {
     if (phonealert < 1) {
      _play('alert'); 
      if (phonealert < 0) { 
        last_time_backup = last_time;
-       consolelog(time+' ⚠️ phone disconnected'); 
+       consolelog(time+' ⚠️ '+alertStatus+' disconnected',true); 
        offtime = new Date();
        offtimelabel = ('0'+offtime.getHours()).slice(-2) + ':' + ('0'+offtime.getMinutes()).slice(-2) + ':' + ('0'+offtime.getSeconds()).slice(-2);
        last_time = offtime;
@@ -190,7 +193,7 @@ setInterval(function() {
     }
   } else last_seen_act=''; 
 
-	if (last_contact != act_contact) // contact changed or initial
+ if (last_contact != act_contact) // contact changed or initial
   { var logs=' now monitoring '+act_contact;
     last_time = new Date(date);
     last_seen_last='';
@@ -210,10 +213,10 @@ setInterval(function() {
   //now check if online
   //check status changed
   if (isOnline == 0 && last_seen_act=='online') { //Status online	or writing...	
-		    last_time = new Date(date);
+	last_time = new Date(date);
         var tdif=get_time_diff(0); 
         if (logged == 1) {      
-		     if (last_contact == act_contact) { //contact returns
+	  if (last_contact == act_contact) { //contact returns
           consolelog(time + ' ' + act_contact + tdif);
          }
         }
@@ -222,8 +225,8 @@ setInterval(function() {
         } 
         SetStatus('Coming online'+tdif);
         _play('online');
-       logged=1;
-		   isOnline = 1;
+        logged=1;
+	isOnline = 1;
     }  
   else 
    if (isOnline>0) SetStatus('Online '+get_time_diff(3)); 
@@ -233,12 +236,12 @@ setInterval(function() {
     //no Label, but was Online => Status offline		
     offtime = new Date();
     offtimelabel = ('0'+offtime.getHours()).slice(-2) + ':' + ('0'+offtime.getMinutes()).slice(-2) + ':' + ('0'+offtime.getSeconds()).slice(-2);
-		isOnline = 0;
+    isOnline = 0;
     last_seen_last = last_seen_act;
     var dif = get_time_diff(1);
     //if (dif !=0) {
-			consolelog(time + ' offline' + dif);
-			consolelog('------------------');
+	consolelog(time + ' offline' + dif);
+	consolelog('------------------');
       SetStatus('Left'+dif);
       _play('offline');
     //}
