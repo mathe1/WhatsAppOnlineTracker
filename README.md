@@ -5,7 +5,8 @@ This is a rebuilt from my works on [WhatsAllApp](https://github.com/mathe1/Whats
 - It plays an audio signal when the contact comes online and when left. 
 - It also plays an audio signal when the contact has seen your message (if blue checks are enabled, v1.1)
 - And now (v1.1) you can hear it when the contact writes his message.
-- plays an audio signal when phone is disconnected and log that period (v1.2)
+- plays an audio signal when phone or computer is disconnected and log that period (v1.2, bugfix in v1.6)
+- v1.6: logging 3 more events: sent your message, receive a friend's message (also sent from popup while shown as "offline"), time when your sent message marked as "seen".
 - Autolog the console.logs to local daily file (v1.3) - this requires a local http-server with running PHP (read details in index.php at folder "localhost"). Updated for use with/on a webserver (v1.3.1).
 - It displays also in the right edge of the chat header some information:
 
@@ -45,10 +46,15 @@ Example:
 15:07:01 Girl - back after 22 Minutes, 45 Seconds.
 15:07:21 offline after 20 Seconds.
 ------------------
+19:05:38 > You sent a Message OUT
+19:07:18 ** Your message was marked as seen after 1 Minutes, 40 Seconds.
+19:07:22 Girl - back after 240 Minutes, 1 Second.
+19:07:24 < Message IN while friend online
+19:07:31 < Message IN while friend online
 ```
 
 You may use this [graphical Log-Analyser Tool](https://mathesoft.eu/software/whatsapponlinetracker-analyser/) to show the timeline of the logfile.
 
 ### Working on:
-- Manage more than one contact, remember times when select another contact and come back.
+- some, would nice to autoclick my favorite contact at startup..
 
