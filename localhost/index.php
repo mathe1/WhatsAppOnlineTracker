@@ -1,4 +1,5 @@
 <?php
+header('Access-Control-Allow-Origin: https://web.whatsapp.com');
 $hash="711vJy&";
 $u=parse_url($_SERVER["REQUEST_URI"], PHP_URL_QUERY);
 if (!empty($u) and strpos($u,$hash)!==false) {
