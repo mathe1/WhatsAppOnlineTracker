@@ -158,21 +158,24 @@ function checkNewMsg(dtime) {
   return;
  }
  //running
+ var newId=false;
  if (msg_last_id!=cL.lastChild.dataset.id)
  {
    if (cL.lastChild.dataset.id.indexOf("false")!=-1) {
      if (dtime!=0) {
        if (isOnline) consolelog(timeformat(dtime)+' < Message IN while friend online',true);
        else consolelog(timeformat(dtime)+' < Message IN from external',true);
+       newId=true;
      } 
    } else {
      if (dtime!=0) {
        if (isOnline) consolelog(timeformat(dtime)+' > You sent a Message OUT while friend online',true);
        else consolelog(timeformat(dtime)+' > You sent a Message OUT',true);
        wrotetime = dtime;
+       newId=true;
      }  
    }
-   msg_last_id=cL.lastChild.dataset.id;
+   if (newId) msg_last_id=cL.lastChild.dataset.id;
  }
 }
 
