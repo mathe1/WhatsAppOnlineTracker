@@ -58,6 +58,6 @@ You may use this [graphical Log-Analyser Tool](https://mathesoft.eu/software/wha
 ### Working on / known issues:
 - wish: would nice to autoclick my favorite contact at startup..
 - wish: manage switching contacts 
-- invenstigation: there is something wrong at logging the IN/OUT messages: incoming messages are not logged in some case...
+- invenstigation, maybe fixed in 1.7: there is something wrong at logging the IN/OUT messages: incoming messages are not logged in some case...
 - problem without solution until now: "seen" flag will set only when you look at your contact on your smartphone. Then it synchronize with browser and there the seen-flag sets. In reality the message may have seen much earlier before!
 
