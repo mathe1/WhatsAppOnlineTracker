@@ -55,8 +55,9 @@ Example:
 
 You may use this [graphical Log-Analyser Tool](https://mathesoft.eu/software/whatsapponlinetracker-analyser/) to show the timeline of the logfile.
 
-### Working on:
-- some, would nice to autoclick my favorite contact at startup..
-- there is an error with logging the IN/OUT messages: incoming messages are often logged as "seen" message. And at switch contact, both IN/OUT messages are false logged. I will fix that soon...
-- another problem is delayed "seen" update. As I looking on my phone, WA updates the seen flag, then it also update at the web app, but in reality it was marked some time earlier by the contact.
+### Working on / known issues:
+- wish: would nice to autoclick my favorite contact at startup..
+- wish: manage switching contacts 
+- invenstigation: there is something wrong at logging the IN/OUT messages: incoming messages are not logged in some case...
+- problem without solution until now: "seen" flag will set only when you look at your contact on your smartphone. Then it synchronize with browser and there the seen-flag sets. In reality the message may have seen much earlier before!
 
