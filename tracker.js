@@ -1,5 +1,5 @@
 // https://github.com/mathe1/WhatsAppOnlineTracker
-// Android-WA 2.20.198.15 - web 2.2035.14
+// Android-WA 2.20.198.15 - web 2.2037.5
 // Edit the Classnames when script don't work
 // OnlineLabelClass is there in the headline under the contact's name
 // ContactNameClass is right from the contact's profile picture in the headline
@@ -7,9 +7,9 @@
 var OnlineLabelClass   = "_3-cMa"; //until 10.06.2020 "O90ur"; 
 var ContactNameClass   = "_33QME"; //until 10.06.2020 "_5SiUq";
 var ToolsClass         = "_3nq_A"; //div for right side at 3dots
-var SeenClassContainer = "_13opk"; //highlighted contact.. has seen the message
-var SeenClass          = "_2RFeE"; //checks are blue
-var phonestatusClass   = "_2vbYK"; // shows the sign and yellow "disconnected" hint 
+var SeenClassContainer = "_1qPwk"; //better check last message than "_13opk"; //highlighted contact.. has seen the message
+var SeenClass          = "_3xkAl"; //better check last message than "_2RFeE"; //checks are blue at contact ladder
+var phonestatusClass   = "_2vbYK"; //shows the sign and yellow "disconnected" hint 
 var forDesktopClass    = "_1evad"; //alert but only for desktop notification
 var msgContainerClass  = "z_tTQ";
 
@@ -100,6 +100,29 @@ function timeformat(date) {
  return ('0'+date.getHours()).slice(-2) + ':' + ('0'+date.getMinutes()).slice(-2) + ':' + ('0'+date.getSeconds()).slice(-2);
 }
 
+function get_time_diff(mode) {
+  var currDate = new Date();
+  if (mode>0) { 
+    if (mode == 2) var dif = currDate.getTime() - offtime.getTime(); 
+    else if (mode == 3 && wrotetime!=0 ) var dif = currDate.getTime() - wrotetime.getTime(); 
+    else var dif = currDate.getTime() - last_time.getTime();
+  }
+  else { var dif = currDate.getTime() - offtime.getTime(); }
+    var TimeInSeconds = Math.abs(dif/1000);
+
+    var MINUTES = Math.floor(TimeInSeconds/60);
+    var SECONDS = Math.floor(TimeInSeconds%60);
+  if (mode>0) { 
+   if (mode == 1 || mode == 3) var FinalTime = ' after '; else var FinalTime = ' since ';
+  }
+  else { var FinalTime = ' - back after '; }
+
+    if (MINUTES != 0) { FinalTime = FinalTime + MINUTES + ' Minutes, ';}
+  if (SECONDS==0 && MINUTES==0) SECONDS=1; //but there was anything.. 
+    FinalTime += SECONDS + ' Seconds.';
+  return FinalTime;
+}
+
 function consolelog(msg,silent) {
   var date = new Date();
   var time = timeformat(date);
@@ -152,6 +175,21 @@ function consolelog(msg,silent) {
 function checkNewMsg(dtime) {
  var cL=document.getElementsByClassName(msgContainerClass)[0]; 
  if (!cL) return;
+
+  var v=document.getElementsByClassName(SeenClassContainer);
+  if (v.length>0) {
+    if (v[v.length-1].getElementsByClassName(SeenClass).length>0) {
+     if (msg_seen==0) {
+       msg_seen=1;
+       if (wrotetime!=0) {
+         _play("note");
+         consolelog(timeformat(dtime)+' ** Your message was marked as seen'+get_time_diff(3));
+       } 
+     }  
+    } 
+    else msg_seen=0;     
+  } 
+
  //initial
  if (msg_last_id=='') {
   msg_last_id=cL.lastChild.dataset.id;
@@ -171,6 +209,7 @@ function checkNewMsg(dtime) {
      if (dtime!=0) {
        if (isOnline) consolelog(timeformat(dtime)+' > You sent a Message OUT while friend online',true);
        else consolelog(timeformat(dtime)+' > You sent a Message OUT',true);
+       msg_seen=0;
        wrotetime = dtime;
        newId=true;
      }  
@@ -179,35 +218,12 @@ function checkNewMsg(dtime) {
  }
 }
 
-function get_time_diff(mode) {
-  var currDate = new Date();
-  if (mode>0) { 
-    if (mode == 2) var dif = currDate.getTime() - offtime.getTime(); 
-    else if (mode == 3 && wrotetime!=0 ) var dif = currDate.getTime() - wrotetime.getTime(); 
-    else var dif = currDate.getTime() - last_time.getTime();
-  }
-  else { var dif = currDate.getTime() - offtime.getTime(); }
-    var TimeInSeconds = Math.abs(dif/1000);
-
-    var MINUTES = Math.floor(TimeInSeconds/60);
-    var SECONDS = Math.floor(TimeInSeconds%60);
-  if (mode>0) { 
-   if (mode == 1 || mode == 3) var FinalTime = ' after '; else var FinalTime = ' since ';
-  }
-  else { var FinalTime = ' - back after '; }
-
-  if (MINUTES != 0) { FinalTime = FinalTime + MINUTES + ' Minutes, ';}
-  if (SECONDS==0 && MINUTES==0) SECONDS=1; //but there was anything.. 
-    FinalTime += SECONDS + ' Seconds.';
-  return FinalTime;
-}
-
 function checkAlertStatus(time) {
   var phonestatus=document.getElementsByClassName(phonestatusClass)[0]; 
   var hinttype=document.getElementsByClassName(forDesktopClass)[0];
   if (phonestatus && !hinttype) {
    let alertStatus=phonestatus.firstElementChild.dataset.icon;
-   if (alertStatus!='') 
+   if (alertStatus!='' && alertStatus!='alert-update') 
    {
     if (phonealert < 1) {
      _play('alert'); 
@@ -218,7 +234,7 @@ function checkAlertStatus(time) {
        offtimelabel = timeformat(offtime);
        last_time = offtime;
      }
-     phonealert = 10;
+     phonealert = 10; //alert sound each 10 sec.
     } else phonealert--; 
     SetStatus('⚠️ Disconnected '+offtimelabel+get_time_diff(2));
     return 1;
@@ -226,7 +242,7 @@ function checkAlertStatus(time) {
   } 
   if (phonealert>0) { 
    consolelog(time+' ⚠️ alert finished'+get_time_diff(1)); 
-   phonealert = -1; 
+   phonealert = -1;  //ready for next alert
    offtime = last_time_backup;
    autoclicked=false; 
   }
@@ -235,31 +251,20 @@ function checkAlertStatus(time) {
 
 setInterval(function() {
   if (!document.getElementsByClassName(msgContainerClass)) return;
-  //if (fav) if (!autoclicked) autoclicked=ClickContact(fav);
+  if (fav) if (!autoclicked) autoclicked=ClickContact(fav);
   var date = new Date();
   var time = timeformat(date);
- 
-  if (last_contact==act_contact) checkNewMsg(date);
   
   //check phone status maybe disconnected and log that 
   if (checkAlertStatus(time)!=0) return;
   
-  var msgcheck=document.getElementsByClassName(SeenClassContainer);
-  if (msgcheck.length>0) {
-    if (msgcheck[0].getElementsByClassName(SeenClass).length>0) {
-     if (msg_seen==0) {
-       _play("note");
-       msg_seen=1;
-       consolelog(time+' ** Your message was marked as seen'+get_time_diff(3));
-     }  
-    } 
-    else msg_seen=0;
-  } 
-      
   try {
    var ctc = document.getElementsByClassName(ContactNameClass);
    act_contact = ctc[0].firstElementChild.firstElementChild.firstElementChild.title;
   } catch(err) {act_contact = 'started!';} 
+
+  if (last_contact!=act_contact) msg_last_id=''; 
+  checkNewMsg(date);
 
   //Read Status: nothing or 'online' (also when 'writing...')
   var last_seen = document.getElementsByClassName(OnlineLabelClass);
@@ -294,25 +299,25 @@ setInterval(function() {
   //now check if online
   //check status changed
   if (isOnline == 0 && last_seen_act=='online') { //Status online	or writing...	
-	last_time = new Date(date);
-        var tdif=get_time_diff(0); 
-        if (logged == 1) {      
-          if (last_contact == act_contact) { //contact returns
-          consolelog(time + ' ' + act_contact + tdif);
-         }
-        }
-        else {
-         consolelog(time + ' ' + act_contact + ' is back / online');
-        } 
-        SetStatus('Coming online'+tdif);
-        _play('online');
-       logged=1;
-       isOnline = 1;
-    }  
-  else 
+    last_time = new Date(date);
+    var tdif=get_time_diff(0); 
+    if (logged == 1) {
+      if (last_contact == act_contact) { //contact returns
+        consolelog(time + ' ' + act_contact + tdif);
+      }
+    }
+    else {
+      consolelog(time + ' ' + act_contact + ' is back / online');
+    } 
+    SetStatus('Coming online'+tdif);
+    _play('online');
+    logged=1;
+    isOnline = 1;
+  }
+  else
    if (isOnline>0) SetStatus('Online '+get_time_diff(99)); 
    else SetStatus('Offline '+offtimelabel+get_time_diff(2));
-  
+
   if ( last_seen_act == '' && isOnline > 0) { 
     //no Label, but was Online => Status offline		
     offtime = new Date();
@@ -325,10 +330,10 @@ setInterval(function() {
     SetStatus('Left'+dif);
     _play('offline');
   } 
-   
-    last_contact=act_contact;
-    last_seen_last=last_seen_act;
-    
+
+  last_contact=act_contact;
+  last_seen_last=last_seen_act;
+
 }, 1000);
 
 //some inits
