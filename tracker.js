@@ -223,7 +223,7 @@ function checkAlertStatus(time) {
   var hinttype=document.getElementsByClassName(forDesktopClass)[0];
   if (phonestatus && !hinttype) {
    let alertStatus=phonestatus.firstElementChild.dataset.icon;
-   if (alertStatus!='' && alertStatus!='alert-update') 
+   if (alertStatus!='' && alertStatus!='alert-update' && alertStatus!='alert-battery') 
    {
     if (phonealert < 1) {
      _play('alert'); 
