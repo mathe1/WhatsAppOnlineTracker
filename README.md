@@ -34,7 +34,7 @@ This is useful to have access and to show alltimes the activities on your smartp
 
 Example:
 ```
-10:18:54 now monitoring Nobody
+10:18:54 now monitoring startet!
 10:19:23 now monitoring Girl
 11:23:57 ⚠️ phone disconnected
 11:24:28 ⚠️ alert finished after 30 Seconds.
@@ -68,6 +68,7 @@ You may use this [graphical Log-Analyser Tool](https://mathesoft.eu/software/wha
 ### Working on / known issues:
 - wish: would nice to autoclick my favorite contact at startup..
 - wish: manage switching contacts
+- bug: if scrolling/jump in/to older messages, the detection logging these old messages, because the feed loading looks for the extension like new messages.
 - problem: vm() logged without duration, maybe duration will display short time later after appear the player container
 - problem without solution until now: messages and "seen" flag will set only when you look at your contact on your smartphone. Then it synchronize with browser and there the seen-flag sets. In reality the message may have seen much earlier before! It seems, the browser goes to a sleep mode after a while (Edge browser in my case).
 
