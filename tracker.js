@@ -1,5 +1,5 @@
 // https://github.com/mathe1/WhatsAppOnlineTracker
-// Android-WA 2.20.198.15 - web 2.2037.5
+// Android-WA 2.20.198.15 - web 2.2037.6
 // Edit the Classnames when script don't work
 // OnlineLabelClass is there in the headline under the contact's name
 // ContactNameClass is right from the contact's profile picture in the headline
@@ -12,11 +12,14 @@ var SeenClass          = "_3xkAl"; //better check last message than "_2RFeE"; //
 var phonestatusClass   = "_2vbYK"; //shows the sign and yellow "disconnected" hint 
 var forDesktopClass    = "_1evad"; //alert but only for desktop notification
 var msgContainerClass  = "z_tTQ";
+var textmessageClass   = "eRacY";
+var voicemessageClass  = "OBQWJ";
+var photomessageClass  = "xOg_4";
 
 //you may also use your own webspace for central logging
 //Set to false, if not wished
 var xhrURL="http://localhost?";
-var autolog_local = true;
+var autolog_local = false;
 
 var xhrURLw="https://your-webspace.xyz?"; //don't forget the ? at the end
 var autolog_web = true;
@@ -31,6 +34,8 @@ var autolog_Wchecked=false;
 var isOnline = 0;
 var logged = 0;
 var phonealert = -1;
+var alertnoted = false; 
+
 
 var last_time;
 var last_time_backup;
@@ -47,6 +52,7 @@ var msg_seen = 0;
 
 //Track also Message-in/out
 var msg_last_id='';
+var msg_last_date=-1;
 var wrotetime=0;
 
 // if fav set, this phone number will click to focus automatically at startup or reconnect
@@ -172,6 +178,42 @@ function consolelog(msg,silent) {
  }
 }
 
+function nerdistics(node) {
+ var o="";
+ var text=node.getElementsByClassName(textmessageClass)[0];
+ var ph=node.getElementsByClassName(photomessageClass)[0];
+ var vm=node.getElementsByClassName(voicemessageClass)[0];
+ if (text) {
+   var c=text.innerText.length;
+   var i=text.getElementsByTagName("img").length;
+   if (ph) o=" ph"; else o=" tx";
+   o=o+"("+c+"/"+i+")"; //Textlength and Count of Emojis in this message
+ } 
+ else
+ if (ph) o=" ph(0/0)"; //received a photo without text 
+ else
+ if (vm) o=" vm("+vm.innerText+")"; //voicemessage-length min:sec
+ else o=" xx(unknown)"; //maybe Sticker (class _1F528), GIF, ..?!
+ return o;
+}
+
+function datetimeConv(s) {
+  var h=s.slice(0,2); var m=s.slice(3,5);
+  var d=s.slice(s.indexOf(" ")+1,s.indexOf(".")); s=s.slice(s.indexOf(".")+1)
+  var M=('0'+s.slice(0,s.indexOf("."))).slice(-2);
+  return s.slice(-4)+M+d+h+m+'00'-0; //as number
+}
+
+function getDateofMsg(cLid) {
+  var cll=cLid.getElementsByClassName("copyable-text")[0];
+  if (cll) return datetimeConv(cll.dataset.prePlainText.slice(1,cll.dataset.prePlainText.indexOf("]")));
+  else return -1;// msg_last_date;
+}
+
+function datetime(date) {
+ return (date.getFullYear() + ('0'+(date.getMonth()+1)).slice(-2) + ('0'+date.getDate()).slice(-2) + ('0'+date.getHours()).slice(-2) + ('0'+date.getMinutes()).slice(-2) + ('0'+date.getSeconds()).slice(-2))-0; //as number
+}
+
 function checkNewMsg(dtime) {
  var cL=document.getElementsByClassName(msgContainerClass)[0]; 
  if (!cL) return;
@@ -201,14 +243,14 @@ function checkNewMsg(dtime) {
  {
    if (cL.lastChild.dataset.id.indexOf("false")!=-1) {
      if (dtime!=0) {
-       if (isOnline) consolelog(timeformat(dtime)+' < Message IN while friend online',true);
-       else consolelog(timeformat(dtime)+' < Message IN from external',true);
+       if (isOnline) consolelog(timeformat(dtime)+' < Message IN while friend online'+nerdistics(cL.lastChild),true);
+       else consolelog(timeformat(dtime)+' < Message IN from external'+nerdistics(cL.lastChild),true);
        newId=true;
      } 
    } else {
      if (dtime!=0) {
-       if (isOnline) consolelog(timeformat(dtime)+' > You sent a Message OUT while friend online',true);
-       else consolelog(timeformat(dtime)+' > You sent a Message OUT',true);
+       if (isOnline) consolelog(timeformat(dtime)+' > You sent a Message OUT while friend online'+nerdistics(cL.lastChild),true);
+       else consolelog(timeformat(dtime)+' > You sent a Message OUT'+nerdistics(cL.lastChild),true);
        msg_seen=0;
        wrotetime = dtime;
        newId=true;
@@ -233,18 +275,19 @@ function checkAlertStatus(time) {
        offtime = new Date();
        offtimelabel = timeformat(offtime);
        last_time = offtime;
+       alertnoted=true;
      }
      phonealert = 10; //alert sound each 10 sec.
     } else phonealert--; 
     SetStatus('⚠️ Disconnected '+offtimelabel+get_time_diff(2));
     return 1;
    }
-  } 
-  if (phonealert>0) { 
+  } else
+  if (alertnoted==true) { 
    consolelog(time+' ⚠️ alert finished'+get_time_diff(1)); 
    phonealert = -1;  //ready for next alert
    offtime = last_time_backup;
-   autoclicked=false; 
+   alertnoted=false; 
   }
   return 0;
 }
