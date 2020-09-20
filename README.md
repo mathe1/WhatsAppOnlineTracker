@@ -8,6 +8,7 @@ This is a rebuilt from my works on [WhatsAllApp](https://github.com/mathe1/Whats
 - plays an audio signal when phone or computer is disconnected and log that period (v1.2, bugfix in v1.6)
 - v1.6: logging 3 more events: sent your message, receive a friend's message (also sent from popup while shown as "offline"), time when your sent message marked as "seen".
 - Autolog the console.logs to local daily file (v1.3) - this requires a local http-server with running PHP (read details in index.php at folder "localhost"). Updated for use with/on a webserver (v1.3.1).
+- v1.8: statistics for nerds ;-) length of message / how many emojis / photo, with text and emoji? / audio, how duration?
 - It displays also in the right edge of the chat header some information:
 
 While contact is online:
@@ -46,18 +47,27 @@ Example:
 15:07:01 Girl - back after 22 Minutes, 45 Seconds.
 15:07:21 offline after 20 Seconds.
 ------------------
-19:05:38 > You sent a Message OUT
-19:07:18 ** Your message was marked as seen after 1 Minutes, 40 Seconds.
-19:07:22 Girl - back after 240 Minutes, 1 Second.
-19:07:24 < Message IN while friend online
-19:07:31 < Message IN while friend online
+19:44:15 Girl - is back / online
+19:44:55 > You sent a Message OUT while friend online tx(206/1)
+19:45:03 ** Your message was marked as seen after 7 Seconds.
+19:45:23 offline after 1 Minutes, 8 Seconds.
+19:46:50 < Message IN from external ph(3/1)
 ```
+
+### Nerdistics
+This is an artificial word for "Nerd" and "Statistics" ;-)
+
+When sent or receive a message, now it logging the length of text, how many emojis were used, ...
+- tx(text length/count of emoji) - textmessage, e.g. tx(206/1)
+- ph(text length/count of emoji) - textmessage with photo, e.g. ph(3/1)
+- vm(duration) - voice message, duration min:sec red out from label, e.g. vm(1:23) 
+- xx(unknown) - other content, maybe possible?
 
 You may use this [graphical Log-Analyser Tool](https://mathesoft.eu/software/whatsapponlinetracker-analyser/) to show the timeline of the logfile.
 
 ### Working on / known issues:
 - wish: would nice to autoclick my favorite contact at startup..
-- wish: manage switching contacts 
-- invenstigation, maybe fixed in 1.7: there is something wrong at logging the IN/OUT messages: incoming messages are not logged in some case...
-- problem without solution until now: "seen" flag will set only when you look at your contact on your smartphone. Then it synchronize with browser and there the seen-flag sets. In reality the message may have seen much earlier before!
+- wish: manage switching contacts
+- problem: vm() logged without duration, maybe duration will display short time later after appear the player container
+- problem without solution until now: messages and "seen" flag will set only when you look at your contact on your smartphone. Then it synchronize with browser and there the seen-flag sets. In reality the message may have seen much earlier before! It seems, the browser goes to a sleep mode after a while (Edge browser in my case).
 
