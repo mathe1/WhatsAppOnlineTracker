@@ -15,6 +15,8 @@ var msgContainerClass  = "z_tTQ";
 var textmessageClass   = "eRacY";
 var voicemessageClass  = "OBQWJ";
 var photomessageClass  = "xOg_4";
+var stickerClass       = "_1F528";
+var msgRecalledClass   = "_1uP6d"; //appears when a message recalled (deleted from feed)
 
 //you may also use your own webspace for central logging
 //Set to false, if not wished
@@ -57,6 +59,7 @@ var wrotetime=0;
 
 // if fav set, this phone number will click to focus automatically at startup or reconnect
 var autoclicked = false;
+var favname = ''; //will read out
 var fav = ''; // without leading 0 or country number e.g. +49 (germany)
 
 //get the extension ID for Audios
@@ -73,6 +76,8 @@ function ClickContact(nr) {
    while (imgs[i].src.indexOf(nr+'%40c.us')<0) i++;
    //var node=imgs[i].parentElement.parentElement.nextElementSibling;
    var node=imgs[i].parentElement.parentElement.parentElement.parentElement;
+   favname=imgs[i].parentElement.parentElement.nextSibling.firstElementChild.firstElementChild.firstElementChild.firstElementChild.title;
+   console.log('Favname is "'+favname+'"; logging is locked to this name.');
    console.log('Autoclick '+nr);
    node.click(); // doesn't work
    return true;
@@ -183,6 +188,7 @@ function nerdistics(node) {
  var text=node.getElementsByClassName(textmessageClass)[0];
  var ph=node.getElementsByClassName(photomessageClass)[0];
  var vm=node.getElementsByClassName(voicemessageClass)[0];
+ var st=node.getElementsByClassName(stickerClass)[0];
  if (text) {
    var c=text.innerText.length;
    var i=text.getElementsByTagName("img").length;
@@ -193,7 +199,9 @@ function nerdistics(node) {
  if (ph) o=" ph(0/0)"; //received a photo without text 
  else
  if (vm) o=" vm("+vm.innerText+")"; //voicemessage-length min:sec
- else o=" xx(unknown)"; //maybe Sticker (class _1F528), GIF, ..?!
+ else 
+ if (st) o=" sticker"; //Sticker
+ else o=" xx(unknown)"; //maybe Video, GIF, ..?!
  return o;
 }
 
@@ -306,6 +314,11 @@ setInterval(function() {
    act_contact = ctc[0].firstElementChild.firstElementChild.firstElementChild.title;
   } catch(err) {act_contact = 'started!';} 
 
+  if (fav!='') if (act_contact!=favname) {
+   SetStatus('🔒 Go back to "'+favname+'" for logging.');
+   return;
+  }
+  
   if (last_contact!=act_contact) msg_last_id=''; 
   checkNewMsg(date);
 
