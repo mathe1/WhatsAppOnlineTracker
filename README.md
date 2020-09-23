@@ -9,6 +9,7 @@ This is a rebuilt from my works on [WhatsAllApp](https://github.com/mathe1/Whats
 - v1.6: logging 3 more events: sent your message, receive a friend's message (also sent from popup while shown as "offline"), time when your sent message marked as "seen".
 - Autolog the console.logs to local daily file (v1.3) - this requires a local http-server with running PHP (read details in index.php at folder "localhost"). Updated for use with/on a webserver (v1.3.1).
 - v1.8: statistics for nerds ;-) length of message / how many emojis / photo, with text and emoji? / audio, how duration?
+- v1.9: detect sticker; If you set a fav contacts, you may switch to other but looging only your fav!
 - It displays also in the right edge of the chat header some information:
 
 While contact is online:
@@ -61,13 +62,14 @@ When sent or receive a message, now it logging the length of text, how many emoj
 - tx(text length/count of emoji) - textmessage, e.g. tx(206/1)
 - ph(text length/count of emoji) - textmessage with photo, e.g. ph(3/1)
 - vm(duration) - voice message, duration min:sec red out from label, e.g. vm(1:23) 
-- xx(unknown) - other content, maybe possible?
+- sticker
+- xx(unknown) - other content, maybe video, ..
 
 You may use this [graphical Log-Analyser Tool](https://mathesoft.eu/software/whatsapponlinetracker-analyser/) to show the timeline of the logfile.
 
 ### Working on / known issues:
 - wish: would nice to autoclick my favorite contact at startup..
-- wish: manage switching contacts
+- wish: manage switching contacts (1st step done in v1.9)
 - bug: if scrolling/jump in/to older messages, the detection logging these old messages, because the feed loading looks for the extension like new messages.
 - problem: vm() logged without duration, maybe duration will display short time later after appear the player container
 - problem without solution until now: messages and "seen" flag will set only when you look at your contact on your smartphone. Then it synchronize with browser and there the seen-flag sets. In reality the message may have seen much earlier before! It seems, the browser goes to a sleep mode after a while (Edge browser in my case).
