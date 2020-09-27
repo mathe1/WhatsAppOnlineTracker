@@ -1,5 +1,5 @@
 // https://github.com/mathe1/WhatsAppOnlineTracker
-// Android-WA 2.20.198.15 - web 2.2037.6
+// Android-WA 2.20.199.14 - web 2.2039.9
 // Edit the Classnames when script don't work
 // OnlineLabelClass is there in the headline under the contact's name
 // ContactNameClass is right from the contact's profile picture in the headline
@@ -276,7 +276,8 @@ function checkAlertStatus(time) {
    if (alertStatus!='' && alertStatus!='alert-update' && alertStatus!='alert-battery') 
    {
     if (phonealert < 1) {
-     _play('alert'); 
+     if (alertStatus.indexOf('computer')!=-1) _play('alertc'); 
+     if (alertStatus.indexOf('phone')!=-1)    _play('alert'); 
      if (phonealert < 0) { 
        last_time_backup = last_time;
        consolelog(time+' ⚠️ '+alertStatus+' disconnected',true); 
