@@ -1,9 +1,9 @@
 {
   "name": "WhatsAppOnlineTracker",
-  "version": "1.9",
+  "version": "1.10",
   "description": "https://github.com/mathe1/WhatsAppOnlineTracker",
   "permissions": ["declarativeContent", "activeTab", "storage","http://localhost/*","https://*/*"],
-  "web_accessible_resources" : ["audios/online.mp3","audios/offline.mp3","audios/alert.mp3","audios/writing.mp3","audios/note.mp3"],
+  "web_accessible_resources" : ["audios/*.mp3"],
   "manifest_version": 2,
   "icons": {
     "16": "images/icon_16x.png",
