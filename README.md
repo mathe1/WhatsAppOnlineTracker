@@ -5,7 +5,7 @@ This is a rebuilt from my works on [WhatsAllApp](https://github.com/mathe1/Whats
 - It plays an audio signal when the contact comes online and when left. 
 - It also plays an audio signal when the contact has seen your message (if blue checks are enabled, v1.1)
 - And now (v1.1) you can hear it when the contact writes his message.
-- plays an audio signal when phone or computer is disconnected and log that period (v1.2, bugfix in v1.6)
+- plays an audio signal when phone or computer is disconnected and log that period (v1.2, bugfix in v1.6, differ in v1.10)
 - v1.6: logging 3 more events: sent your message, receive a friend's message (also sent from popup while shown as "offline"), time when your sent message marked as "seen".
 - Autolog the console.logs to local daily file (v1.3) - this requires a local http-server with running PHP (read details in index.php at folder "localhost"). Updated for use with/on a webserver (v1.3.1).
 - v1.8: statistics for nerds ;-) length of message / how many emojis / photo, with text and emoji? / audio, how duration?
