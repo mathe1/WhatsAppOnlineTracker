@@ -73,7 +73,7 @@ When sent or receive a message, now it logging the length of text, how many emoj
 - sticker
 - xx(unknown) - other content, maybe video, ..
 
-You may use this [graphical Log-Analyser Tool](https://mathesoft.eu/software/whatsapponlinetracker-analyser/) to show the timeline of the logfile.
+You may use this [graphical Log-Analyser Tool](https://mathesoft.eu/software/whatsapponlinetracker-analyser/) to show the timeline of the logfile (Updated 29.09.2020 to support v1.11).
 
 ### Working on / known issues:
 - wish: would nice to autoclick my favorite contact at startup..
