@@ -10,6 +10,7 @@ This is a rebuilt from my works on [WhatsAllApp](https://github.com/mathe1/Whats
 - Autolog the console.logs to local daily file (v1.3) - this requires a local http-server with running PHP (read details in index.php at folder "localhost"). Updated for use with/on a webserver (v1.3.1).
 - v1.8: statistics for nerds ;-) length of message / how many emojis / photo, with text and emoji? / audio, how duration?
 - v1.9: detect sticker; If you set a fav contacts, you may switch to other but looging only your fav!
+- v1.11: log a keepAlive-ping, so you check that browser is working correct, if no ping after defined period, the browser could be crashed or anything is wrong with the PC...
 - It displays also in the right edge of the chat header some information:
 
 While contact is online:
@@ -54,6 +55,13 @@ Example:
 19:45:23 offline after 1 Minutes, 8 Seconds.
 19:46:50 < Message IN from external ph(3/1)
 ```
+
+If you use the ping logging function, there periodical notes like
+```
+alive @ 22:34:10
+``` 
+between the normal logging.
+You may use a tool to check this data for special alert...
 
 ### Nerdistics
 This is an artificial word for "Nerd" and "Statistics" ;-)
