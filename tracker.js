@@ -18,6 +18,12 @@ var photomessageClass  = "xOg_4";
 var stickerClass       = "_1F528";
 var msgRecalledClass   = "_1uP6d"; //appears when a message recalled (deleted from feed)
 
+//if you need a signal to the log, that your PC, Browser is working correct
+//set ping to value > 0 (secounds for send that signal) // it simple counts up in pingc 
+var ping = 60;
+var pingc= 0;
+var pings="alive";
+
 //you may also use your own webspace for central logging
 //Set to false, if not wished
 var xhrURL="http://localhost?";
@@ -269,6 +275,7 @@ function checkNewMsg(dtime) {
 }
 
 function checkAlertStatus(time) {
+  if (ping!=0) if (pingc==(ping-1)) { consolelog(pings+" @ "+time); pingc=0; } else pingc++;
   var phonestatus=document.getElementsByClassName(phonestatusClass)[0]; 
   var hinttype=document.getElementsByClassName(forDesktopClass)[0];
   if (phonestatus && !hinttype) {
@@ -394,8 +401,10 @@ setInterval(function() {
 }, 1000);
 
 //some inits
+msg_seen=1; //avoid false detection at 1st time open the contact
 //Show WA-web version
 var t=document.scripts[document.scripts.length-1].text;
     t=t.slice(t.indexOf("crashlogs")-40,t.indexOf("crashlogs"));
     t=t.slice(t.indexOf("=")+2,t.indexOf('",',t));
 consolelog("WhatsApp-web Version: "+t);
+if (ping!=0) consolelog("Ping ("+pings+") ="+ping);
