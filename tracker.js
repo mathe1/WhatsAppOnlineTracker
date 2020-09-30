@@ -309,7 +309,7 @@ function checkAlertStatus(time) {
 }
 
 setInterval(function() {
-  if (!document.getElementsByClassName(msgContainerClass)) return;
+  if (document.getElementsByClassName(msgContainerClass).length==0) return;
   if (fav) if (!autoclicked) autoclicked=ClickContact(fav);
   var date = new Date();
   var time = timeformat(date);
