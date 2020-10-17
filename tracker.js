@@ -1,11 +1,35 @@
-// https://github.com/mathe1/WhatsAppOnlineTracker
-// Android-WA 2.20.199.14 - web 2.2039.9
+// https://github.com/mathe1/WhatsAppOnlineTracker + Instagram
+// Android-WA 2.20.201.21 - web 2.2041.6
 // Edit the Classnames when script don't work
-// OnlineLabelClass is there in the headline under the contact's name
-// ContactNameClass is right from the contact's profile picture in the headline
 
-var OnlineLabelClass   = "_3-cMa"; //until 10.06.2020 "O90ur"; 
-var ContactNameClass   = "_33QME"; //until 10.06.2020 "_5SiUq";
+// ******* Your private settings
+
+var fav     = ""; // without leading 0 or country number e.g. +49 (germany)
+var i_fav   = ""; // your fav nickname to monitoring on instagram
+
+//  you may also use your own webspace for central logging
+//  Set to false, if not wished
+var autolog_web   = true;
+var autolog_local = false;
+var xhrURL="http://localhost";
+var xhrURLw ="https://your-webspace.xyz"; //for online logging
+//  set any authorisation when use an online webserver, so avoid false data
+//  this "hash" write also inside the index.php, else no logging 
+var hash    ="711vJy"; //like a password
+
+//if you need a non-acustic signal to the log, that your PC, Browser is working correct
+//set ping to value > 0 (secounds for send that signal) // it simple counts up in pingc
+//for WhatsApp 
+var ping = 60; 
+var pings="alive";
+//for Instagram
+var i_ping = 60; //each .. secounds
+var i_pings="*i* refresh";
+
+// ******* Change the other settings only if you know, what you doing
+
+var OnlineLabelClass   = "_3-cMa"; //is there in the headline under the contact's name 
+var ContactNameClass   = "_33QME"; //is right from the contact's profile picture in the headline
 var ToolsClass         = "_3nq_A"; //div for right side at 3dots
 var SeenClassContainer = "_1qPwk"; //better check last message than "_13opk"; //highlighted contact.. has seen the message
 var SeenClass          = "_3xkAl"; //better check last message than "_2RFeE"; //checks are blue at contact ladder
@@ -18,23 +42,14 @@ var photomessageClass  = "xOg_4";
 var stickerClass       = "_1F528";
 var msgRecalledClass   = "_1uP6d"; //appears when a message recalled (deleted from feed)
 
-//if you need a signal to the log, that your PC, Browser is working correct
-//set ping to value > 0 (secounds for send that signal) // it simple counts up in pingc 
-var ping = 60;
+//InstagramClasses
+var i_contact  = "DPiy6";
+var i_select   = "QOqBd";
+var i_new      = "ZQScA";
+var i_box      = "_3wFWr";
+var i_continue = "cB_4K";
+
 var pingc= 0;
-var pings="alive";
-
-//you may also use your own webspace for central logging
-//Set to false, if not wished
-var xhrURL="http://localhost?";
-var autolog_local = false;
-
-var xhrURLw="https://your-webspace.xyz?"; //don't forget the ? at the end
-var autolog_web = true;
-
-//set any authorisation when use an online webserver, so avoid false data
-//this "hash" write also inside the index.php, else no logging 
-var hash="711vJy&"; //don't forget the & at the end
 
 var autolog_Lchecked=false;
 var autolog_Wchecked=false;
@@ -44,6 +59,7 @@ var logged = 0;
 var phonealert = -1;
 var alertnoted = false; 
 
+var msg_was = ""; //store last message-in content to restore if recalled
 
 var last_time;
 var last_time_backup;
@@ -66,7 +82,7 @@ var wrotetime=0;
 // if fav set, this phone number will click to focus automatically at startup or reconnect
 var autoclicked = false;
 var favname = ''; //will read out
-var fav = ''; // without leading 0 or country number e.g. +49 (germany)
+var favswitch=-1; 
 
 //get the extension ID for Audios
 var extsrc=chrome.extension.getURL('/tracker.js');
@@ -84,12 +100,14 @@ function ClickContact(nr) {
    var node=imgs[i].parentElement.parentElement.parentElement.parentElement;
    favname=imgs[i].parentElement.parentElement.nextSibling.firstElementChild.firstElementChild.firstElementChild.firstElementChild.title;
    console.log('Favname is "'+favname+'"; logging is locked to this name.');
-   console.log('Autoclick '+nr);
-   node.click(); // doesn't work
-   return true;
- } catch { 
-     console.log('No autoclick'); return false; 
-   }
+   
+   node.click(); // doesn't work -> false
+   //should check here for worked..
+   var chkresult='failed';
+   console.log('Autoclick '+nr+' '+chkresult);
+   if (chkresult=='done') {favswitch=0; autoclicked=true} else favswitch=2; 
+   return; 
+ } catch(e) {return;}
 }
 
 function SetStatus(x) {
@@ -140,7 +158,11 @@ function get_time_diff(mode) {
   return FinalTime;
 }
 
-function consolelog(msg,silent) {
+function consolelog(msg,silent,f_alive,alive_log) {
+// silent=true: plays no audio
+// f_alive: name of a separate loglife   nee. das muss in der index.php definiert werden...
+// alive_log=true: append the separate logfile; =false: writes a single line of last alive moment
+
   var date = new Date();
   var time = timeformat(date);
  console.log(msg);
@@ -162,7 +184,7 @@ function consolelog(msg,silent) {
      }    
     }
   }
-  xhr.open("GET", xhrURL+hash+encodeURI(msg));
+  xhr.open("GET", xhrURL+"?"+hash+"&"+encodeURI(msg));
   if (xhr.readyState==xhr.OPENED) xhr.send();
  }
   
@@ -184,19 +206,20 @@ function consolelog(msg,silent) {
      } 
     }
   }
-  xhro.open("GET", xhrURLw+hash+encodeURI(msg));
+  xhro.open("GET", xhrURLw+"?"+hash+"&"+encodeURI(msg));
   if (xhro.readyState==xhro.OPENED) xhro.send();
  }
 }
 
-function nerdistics(node) {
+function nerdistics(node,got) {
  var o="";
  var text=node.getElementsByClassName(textmessageClass)[0];
  var ph=node.getElementsByClassName(photomessageClass)[0];
  var vm=node.getElementsByClassName(voicemessageClass)[0];
  var st=node.getElementsByClassName(stickerClass)[0];
- if (text) {
+ if (text) {                               
    var c=text.innerText.length;
+   if (got==true) msg_was = text.innerText; //store the message
    var i=text.getElementsByTagName("img").length;
    if (ph) o=" ph"; else o=" tx";
    o=o+"("+c+"/"+i+")"; //Textlength and Count of Emojis in this message
@@ -228,10 +251,57 @@ function datetime(date) {
  return (date.getFullYear() + ('0'+(date.getMonth()+1)).slice(-2) + ('0'+date.getDate()).slice(-2) + ('0'+date.getHours()).slice(-2) + ('0'+date.getMinutes()).slice(-2) + ('0'+date.getSeconds()).slice(-2))-0; //as number
 }
 
+function recalled(Node) {
+ return (Node.getElementsByClassName(msgRecalledClass).length!=0)
+}
+
 function checkNewMsg(dtime) {
  var cL=document.getElementsByClassName(msgContainerClass)[0]; 
  if (!cL) return;
 
+ //initial
+ if (msg_last_id=='') {
+   msg_last_id=cL.lastChild.dataset.id;
+   return;
+ }
+
+ //running
+ var newId=false;   
+ if (msg_last_id!=cL.lastChild.dataset.id)
+ {
+   if (cL.lastChild.dataset.id.indexOf("false")!=-1) {
+     if (dtime!=0) {
+       if (recalled(cL.lastChild)) {
+         consolelog(timeformat(dtime)+' XX Friend recalled last message - content: ['+msg_was+']',true);
+         msg_was='';
+       }
+       else {
+         if (isOnline) consolelog(timeformat(dtime)+' < Message IN while friend online'+nerdistics(cL.lastChild,true),true);
+         else consolelog(timeformat(dtime)+' < Message IN from external'+nerdistics(cL.lastChild,true),true);
+       } 
+       newId=true;
+     }  
+   }
+   if (cL.lastChild.dataset.id.indexOf("true")!=-1) {
+     if (dtime!=0) {
+       if (recalled(cL.lastChild)) {
+         consolelog(timeformat(dtime)+' XX You recalled your last message!',true);
+         msg_seen=1;
+         // no need to store last message content - you know, what you wrote
+       }
+       else {
+         if (isOnline) consolelog(timeformat(dtime)+' > You sent a Message OUT while friend online'+nerdistics(cL.lastChild,false),true);
+         else consolelog(timeformat(dtime)+' > You sent a Message OUT'+nerdistics(cL.lastChild,false),true);
+         msg_seen=0;
+         wrotetime = dtime;
+       }  
+       newId=true;
+     }  
+   }
+   if (newId) msg_last_id=cL.lastChild.dataset.id;
+ }
+ 
+  //seen?
   var v=document.getElementsByClassName(SeenClassContainer);
   if (v.length>0) {
     if (v[v.length-1].getElementsByClassName(SeenClass).length>0) {
@@ -246,32 +316,6 @@ function checkNewMsg(dtime) {
     else msg_seen=0;     
   } 
 
- //initial
- if (msg_last_id=='') {
-  msg_last_id=cL.lastChild.dataset.id;
-  return;
- }
- //running
- var newId=false;
- if (msg_last_id!=cL.lastChild.dataset.id)
- {
-   if (cL.lastChild.dataset.id.indexOf("false")!=-1) {
-     if (dtime!=0) {
-       if (isOnline) consolelog(timeformat(dtime)+' < Message IN while friend online'+nerdistics(cL.lastChild),true);
-       else consolelog(timeformat(dtime)+' < Message IN from external'+nerdistics(cL.lastChild),true);
-       newId=true;
-     } 
-   } else {
-     if (dtime!=0) {
-       if (isOnline) consolelog(timeformat(dtime)+' > You sent a Message OUT while friend online'+nerdistics(cL.lastChild),true);
-       else consolelog(timeformat(dtime)+' > You sent a Message OUT'+nerdistics(cL.lastChild),true);
-       msg_seen=0;
-       wrotetime = dtime;
-       newId=true;
-     }  
-   }
-   if (newId) msg_last_id=cL.lastChild.dataset.id;
- }
 }
 
 function checkAlertStatus(time) {
@@ -284,6 +328,7 @@ function checkAlertStatus(time) {
    {
     if (phonealert < 1) {
      if (alertStatus.indexOf('computer')!=-1) _play('alertc'); 
+     else    
      if (alertStatus.indexOf('phone')!=-1)    _play('alert'); 
      if (phonealert < 0) { 
        last_time_backup = last_time;
@@ -297,20 +342,91 @@ function checkAlertStatus(time) {
     } else phonealert--; 
     SetStatus('⚠️ Disconnected '+offtimelabel+get_time_diff(2));
     return 1;
-   }
+   } 
   } else
   if (alertnoted==true) { 
    consolelog(time+' ⚠️ alert finished'+get_time_diff(1)); 
    phonealert = -1;  //ready for next alert
    offtime = last_time_backup;
    alertnoted=false; 
-  }
+  }  
   return 0;
 }
 
-setInterval(function() {
+var i_act="";
+//for refresh status do:
+//click new message, then fav contact, then continue button
+//if contact is active: repeat that all 60 sec
+//else wait for label change
+var i_step = 0;
+if (document.URL.indexOf("instagram")>0) setInterval(function() {
+  var date = new Date();       //service for refresh status
+  var time = timeformat(date);
+
+ switch (i_step) {
+  case 0:
+    var n = document.getElementsByClassName(i_new);
+    if (n.length>0) {
+     n[0].click();
+     i_step++;
+    } 
+    break;
+  case 1:
+    var n = document.getElementsByClassName(i_box)[0].getElementsByClassName("qyrsm");
+    if (n.length>0) {
+     for (let p=0; p<n.length;p++) {
+      if (n[p].innerText==i_fav) {n[p].click(); i_step++; break;}
+     } 
+    } 
+    break;
+  case 2:
+    var n = document.getElementsByClassName(i_continue);
+    if (n.length>0) { 
+     pingc++;
+     if (pingc>20) { //reload the page because refresh works only some minutes
+      consolelog(time+" *i* reload page"); 
+      location.reload();
+     } 
+     else {
+      if (i_ping>0) consolelog(time+" "+i_pings); 
+      n[0].click(); 
+      i_step++;
+     } 
+    }
+    break;
+  default:  
+   i_step++;
+   if (i_step>i_ping) i_step=0;
+ } 
+
+}, 1000);
+
+
+if (document.URL.indexOf("instagram")>0) setInterval(function() {
+  var date = new Date();        //monitoring status-label
+  var time = timeformat(date);
+
+  var i_sel = document.getElementsByClassName(i_select);
+  //selected
+  var f="";
+  if (i_sel.length==1) f=i_sel[0].innerText.replace(/(\r\n|\n|\r)/gm, "");
+  else {
+    var c=document.getElementsByClassName(i_contact);
+    //find fav
+    for (let i=0;i<c.length;i++)
+      if (c[i].innerText.indexOf(i_fav)==0) { 
+       f=c[i].innerText.replace(/(\r\n|\n|\r)/gm, ""); 
+       break;
+      }
+    //select for chat  
+  }            
+  if (f!=i_act) { i_act=f; consolelog(time+" *i* "+f); }
+}, 1000);
+else
+setInterval(function() {        //WhatsAppTracker
+  if (document.getElementById("startup")!=null) return;
+  if (fav!='') if (!autoclicked && favswitch==-1) ClickContact(fav); //after wa-startup
   if (document.getElementsByClassName(msgContainerClass).length==0) return;
-  if (fav) if (!autoclicked) autoclicked=ClickContact(fav);
   var date = new Date();
   var time = timeformat(date);
   
@@ -320,12 +436,17 @@ setInterval(function() {
   try {
    var ctc = document.getElementsByClassName(ContactNameClass);
    act_contact = ctc[0].firstElementChild.firstElementChild.firstElementChild.title;
-  } catch(err) {act_contact = 'started!';} 
+  } catch(err) {act_contact = 'started!'; } 
 
-  if (fav!='') if (act_contact!=favname) {
-   SetStatus('🔒 Go back to "'+favname+'" for logging.');
-   return;
-  }
+  if (fav!='') {
+   if (favname=='') return;
+   if (act_contact!=favname) {
+    if (favswitch==0) { favswitch=1; consolelog(time+' Switched to another contact'); }
+    SetStatus('🔒 Go back to "'+favname+'" for logging.');
+    return;
+   }
+   if (favswitch>0) { if (favswitch==1) consolelog(time+' Switched back to fav contact'); favswitch=0;}
+  } 
   
   if (last_contact!=act_contact) msg_last_id=''; 
   checkNewMsg(date);
@@ -401,10 +522,16 @@ setInterval(function() {
 }, 1000);
 
 //some inits
-msg_seen=1; //avoid false detection at 1st time open the contact
-//Show WA-web version
-var t=document.scripts[document.scripts.length-1].text;
+if (document.URL.indexOf("whatsapp")>0) { 
+  msg_seen=1; //avoid false detection at 1st time open the contact
+  //Show WA-web version
+  var t=document.scripts[document.scripts.length-1].text;
     t=t.slice(t.indexOf("crashlogs")-40,t.indexOf("crashlogs"));
     t=t.slice(t.indexOf("=")+2,t.indexOf('",',t));
-consolelog("WhatsApp-web Version: "+t);
-if (ping!=0) consolelog("Ping ("+pings+") ="+ping);
+  consolelog("WhatsApp-web Version: "+t); 
+  if (ping!=0) consolelog("Ping ("+pings+") ="+ping);
+}
+else 
+{ consolelog("Instagram-Start");
+  if (i_ping!=0) consolelog("Insta-Ping ("+pings+") ="+i_ping);
+}  
