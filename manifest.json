@@ -1,6 +1,6 @@
 {
-  "name": "WhatsAppOnlineTracker",
-  "version": "1.11",
+  "name": "WhatsAppInstaOnlineTracker",
+  "version": "1.12",
   "description": "https://github.com/mathe1/WhatsAppOnlineTracker",
   "permissions": ["declarativeContent", "activeTab", "storage","http://localhost/*","https://*/*"],
   "web_accessible_resources" : ["audios/*.mp3"],
@@ -13,7 +13,7 @@
   },
   "content_scripts": [
     {
-      "matches": ["https://web.whatsapp.com/*"],
+      "matches": ["https://web.whatsapp.com/*","https://www.instagram.com/direct/*"],
       "js": [ "tracker.js" ],
       "run_at": "document_end"
     } ]
