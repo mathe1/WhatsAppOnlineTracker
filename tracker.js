@@ -24,6 +24,7 @@ var ping = 60;
 var pings="alive";
 //for Instagram
 var i_ping = 60; //each .. secounds
+var i_period = 20; // so after 20 Minutes the page will reload
 var i_pings="*i* refresh";
 
 // ******* Change the other settings only if you know, what you doing
@@ -359,10 +360,8 @@ var i_act="";
 //if contact is active: repeat that all 60 sec
 //else wait for label change
 var i_step = 0;
-if (document.URL.indexOf("instagram")>0) setInterval(function() {
-  var date = new Date();       //service for refresh status
-  var time = timeformat(date);
-
+if (document.URL.indexOf("instagram")>0) 
+if (i_ping>0) setInterval(function() {   //service for refresh status
  switch (i_step) {
   case 0:
     var n = document.getElementsByClassName(i_new);
@@ -383,12 +382,14 @@ if (document.URL.indexOf("instagram")>0) setInterval(function() {
     var n = document.getElementsByClassName(i_continue);
     if (n.length>0) { 
      pingc++;
-     if (pingc>20) { //reload the page because refresh works only some minutes
+     var date = new Date();     
+     var time = timeformat(date);
+     if (pingc>i_period) { //reload the page because refresh works only some minutes
       consolelog(time+" *i* reload page"); 
       location.reload();
      } 
      else {
-      if (i_ping>0) consolelog(time+" "+i_pings); 
+      consolelog(time+" "+i_pings); 
       n[0].click(); 
       i_step++;
      } 
@@ -402,9 +403,9 @@ if (document.URL.indexOf("instagram")>0) setInterval(function() {
 }, 1000);
 
 
-if (document.URL.indexOf("instagram")>0) setInterval(function() {
-  var date = new Date();        //monitoring status-label
-  var time = timeformat(date);
+if (document.URL.indexOf("instagram")>0) {
+ if (i_ping>0)  //monitoring status-label
+ setInterval(function() {
 
   var i_sel = document.getElementsByClassName(i_select);
   //selected
@@ -420,8 +421,13 @@ if (document.URL.indexOf("instagram")>0) setInterval(function() {
       }
     //select for chat  
   }            
-  if (f!=i_act) { i_act=f; consolelog(time+" *i* "+f); }
-}, 1000);
+  if (f!=i_act) { 
+   var date = new Date();        
+   var time = timeformat(date);
+   i_act=f; consolelog(time+" *i* "+f); 
+  }
+ }, i_ping*1000);
+}
 else
 setInterval(function() {        //WhatsAppTracker
   if (document.getElementById("startup")!=null) return;
@@ -532,6 +538,4 @@ if (document.URL.indexOf("whatsapp")>0) {
   if (ping!=0) consolelog("Ping ("+pings+") ="+ping);
 }
 else 
-{ consolelog("Instagram-Start");
-  if (i_ping!=0) consolelog("Insta-Ping ("+pings+") ="+i_ping);
-}  
+if (i_ping!=0) consolelog("Instagram-Ping ("+i_pings+") ="+i_ping);  
