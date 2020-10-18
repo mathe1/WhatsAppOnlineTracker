@@ -23,8 +23,8 @@ var hash    ="711vJy"; //like a password
 var ping = 60; 
 var pings="alive";
 //for Instagram
-var i_ping = 60; //each .. secounds
-var i_period = 20; // so after 20 Minutes the page will reload
+var i_ping = 180; //each .. secounds
+var i_period = 7; // so after 21 Minutes the page will reload
 var i_pings="*i* refresh";
 
 // ******* Change the other settings only if you know, what you doing
@@ -45,7 +45,7 @@ var msgRecalledClass   = "_1uP6d"; //appears when a message recalled (deleted fr
 
 //InstagramClasses
 var i_contact  = "DPiy6";
-var i_select   = "QOqBd";
+var i_select   = "_8A5w5"; 
 var i_new      = "ZQScA";
 var i_box      = "_3wFWr";
 var i_continue = "cB_4K";
