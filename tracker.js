@@ -1,5 +1,5 @@
 // https://github.com/mathe1/WhatsAppOnlineTracker + Instagram
-// Android-WA 2.20.201.21 - web 2.2041.6
+// Android-WA 2.20.205.16 - web 2.2047.11
 // Edit the Classnames when script don't work
 
 // ******* Your private settings
@@ -9,7 +9,7 @@ var i_fav   = ""; // your fav nickname to monitoring on instagram
 
 //  you may also use your own webspace for central logging
 //  Set to false, if not wished
-var autolog_web   = true;
+var autolog_web   = false;
 var autolog_local = false;
 var xhrURL="http://localhost";
 var xhrURLw ="https://your-webspace.xyz"; //for online logging
@@ -29,23 +29,28 @@ var i_pings="*i* refresh";
 
 // ******* Change the other settings only if you know, what you doing
 
-var OnlineLabelClass   = "_3-cMa"; //is there in the headline under the contact's name 
-var ContactNameClass   = "_33QME"; //is right from the contact's profile picture in the headline
-var ToolsClass         = "_3nq_A"; //div for right side at 3dots
-var SeenClassContainer = "_1qPwk"; //better check last message than "_13opk"; //highlighted contact.. has seen the message
-var SeenClass          = "_3xkAl"; //better check last message than "_2RFeE"; //checks are blue at contact ladder
-var phonestatusClass   = "_2vbYK"; //shows the sign and yellow "disconnected" hint 
-var forDesktopClass    = "_1evad"; //alert but only for desktop notification
-var msgContainerClass  = "z_tTQ";
-var textmessageClass   = "eRacY";
-var voicemessageClass  = "OBQWJ";
-var photomessageClass  = "xOg_4";
-var stickerClass       = "_1F528";
-var msgRecalledClass   = "_1uP6d"; //appears when a message recalled (deleted from feed)
+//header left
+var StatusInformer     = "_2wfYK"; //ring with dot of new status from anyone
+var phonestatusClass   = "_1UGDt"; //shows the sign and yellow "disconnected" hint 
+var forDesktopClass    = "_1oIRX"; //alert but only for desktop notification
+//header upper chatarea
+var ContactNameClass   = "YEe1t"; //is right from the contact's profile picture in the headline
+var OnlineLabelClass   = "_3Id9P"; //is there in the headline under the contact's name 
+var ToolsClass         = "VPvMz"; //div for right side at 3dots
+//chatarea
+var msgContainerClass  = "tSmQ1";
+var SeenClassContainer = "_2v8yt"; //highlighted contact.. has seen the message
+var SeenClass          = "_2XORi"; //checks are blue at contact ladder
+//messages
+var textmessageClass   = "_1wlJG";
+var voicemessageClass  = "_3s69f";
+var photomessageClass  = "_3QMia"; //maybe  _3kSha
+var stickerClass       = "_23kzp";
+var msgRecalledClass   = "_1qQEf"; //appears when a message recalled (deleted from feed)
 
 //InstagramClasses
 var i_contact  = "DPiy6";
-var i_select   = "_8A5w5"; 
+var i_select   = "_8A5w5"; //1.13
 var i_new      = "ZQScA";
 var i_box      = "_3wFWr";
 var i_continue = "cB_4K";
@@ -74,6 +79,7 @@ var last_contact ='.';
 var act_contact ='';
 
 var msg_seen = 0;
+var statusreported=false;
 
 //Track also Message-in/out
 var msg_last_id='';
@@ -321,7 +327,7 @@ function checkNewMsg(dtime) {
 
 function checkAlertStatus(time) {
   if (ping!=0) if (pingc==(ping-1)) { consolelog(pings+" @ "+time); pingc=0; } else pingc++;
-  var phonestatus=document.getElementsByClassName(phonestatusClass)[0]; 
+  var phonestatus=document.getElementsByClassName(phonestatusClass)[0];
   var hinttype=document.getElementsByClassName(forDesktopClass)[0];
   if (phonestatus && !hinttype) {
    let alertStatus=phonestatus.firstElementChild.dataset.icon;
@@ -361,7 +367,7 @@ var i_act="";
 //else wait for label change
 var i_step = 0;
 if (document.URL.indexOf("instagram")>0) 
-if (i_ping>0) setInterval(function() {   //service for refresh status
+if (i_ping>0) setInterval(function() { //service for refresh status
  switch (i_step) {
   case 0:
     var n = document.getElementsByClassName(i_new);
@@ -381,12 +387,13 @@ if (i_ping>0) setInterval(function() {   //service for refresh status
   case 2:
     var n = document.getElementsByClassName(i_continue);
     if (n.length>0) { 
-     pingc++;
-     var date = new Date();     
+     pingc++;  var rx=false;
+     var date = new Date();       
      var time = timeformat(date);
      if (pingc>i_period) { //reload the page because refresh works only some minutes
       consolelog(time+" *i* reload page"); 
       location.reload();
+      i_step++; rx=true;
      } 
      else {
       consolelog(time+" "+i_pings); 
@@ -395,15 +402,22 @@ if (i_ping>0) setInterval(function() {   //service for refresh status
      } 
     }
     break;
-  default:  
+  case 3:  
    i_step++;
+   if (rx) {
+     consolelog(time+" *i* reload delayed...");
+     location.reload(); //next try
+   }
+   break;
+  default:  
+   i_step++; 
    if (i_step>i_ping) i_step=0;
  } 
 
 }, 1000);
 
 
-if (document.URL.indexOf("instagram")>0) {
+if (document.URL.indexOf("instagram")>0) { 
  if (i_ping>0)  //monitoring status-label
  setInterval(function() {
 
@@ -426,7 +440,7 @@ if (document.URL.indexOf("instagram")>0) {
    var time = timeformat(date);
    i_act=f; consolelog(time+" *i* "+f); 
   }
- }, i_ping*1000);
+ }, 1000);
 }
 else
 setInterval(function() {        //WhatsAppTracker
@@ -441,7 +455,7 @@ setInterval(function() {        //WhatsAppTracker
   
   try {
    var ctc = document.getElementsByClassName(ContactNameClass);
-   act_contact = ctc[0].firstElementChild.firstElementChild.firstElementChild.title;
+   act_contact = ctc[0].firstElementChild.title;
   } catch(err) {act_contact = 'started!'; } 
 
   if (fav!='') {
@@ -524,6 +538,20 @@ setInterval(function() {        //WhatsAppTracker
 
   last_contact=act_contact;
   last_seen_last=last_seen_act;
+  
+  var statusinfo=document.getElementsByClassName(StatusInformer)[0];
+  if (statusinfo.innerHTML.indexOf("unread")>0) {
+   if (!statusreported) { 
+    statusreported=true;
+    consolelog(time + '📰 someone has posted a new status');
+    _play('news');
+   }
+  } else {
+   if (statusreported) {
+    statusreported=false;
+    consolelog(time + '📰 you have viewed the status')
+   }
+  } 
 
 }, 1000);
 
