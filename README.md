@@ -12,6 +12,7 @@ This is a rebuilt from my works on [WhatsAllApp](https://github.com/mathe1/Whats
 - v1.9: detect sticker; If you set a fav contacts, you may switch to other but looging only your fav!
 - v1.11: log a keepAlive-ping, so you check that browser is working correct, if no ping after defined period, the browser could be crashed or anything is wrong with the PC...
 - v1.12: NEW: monitoring Instagram-Online status too. NEW: log the recalled messages of your friend (only the last message; not checked but theoretically it should work ;-) ).
+- v1.20: Updated the ClassNames; New function: logging when somebody posted a new status, and when you viewed it. Maybe interesting?
 - It displays also in the right edge of the chat header some information:
 
 While contact is online:
@@ -48,8 +49,10 @@ Example:
 14:44:16 offline after 31 Seconds.
 ------------------
 15:07:01 Girl - back after 22 Minutes, 45 Seconds.
+15:07:12 📰 someone has posted a new status
 15:07:21 offline after 20 Seconds.
 ------------------
+17:03:41 📰 you have viewed the status
 19:44:15 Girl - is back / online
 19:44:55 > You sent a Message OUT while friend online tx(206/1)
 19:45:03 ** Your message was marked as seen after 7 Seconds.
@@ -95,6 +98,17 @@ There are two intervals set for handling the Instagram status:
 
 After a while of periods it reload the page, because the label will not refrsh anymore by Instagram.
 The count of periods is experimental an you define it in i_period (set to 20 now).
+
+Example
+```
+18:07:34 *i* reload page
+Instagram-Ping (*i* refresh) =180
+18:07:43 *i* refresh 1
+18:07:47 *i* (friend)Vor 5 Std. aktiv
+18:10:47 *i* refresh 2
+18:11:09 *i* (friend)Jetzt aktiv
+18:13:47 *i* refresh 3
+```
 
 ##### Hint
 If you log both pages on a single browser/PC, you may enable only one Ping. It was introduced to check the activity whether the PC was still online or the website had crashed.
