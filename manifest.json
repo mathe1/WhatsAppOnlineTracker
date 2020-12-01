@@ -1,6 +1,6 @@
 {
   "name": "WhatsAppInstaOnlineTracker",
-  "version": "1.20",
+  "version": "1.21",
   "description": "https://github.com/mathe1/WhatsAppOnlineTracker",
   "permissions": ["declarativeContent", "activeTab", "storage","http://localhost/*","https://*/*"],
   "web_accessible_resources" : ["audios/*.mp3"],
