@@ -2,6 +2,8 @@
 This extension looking for the "online" label of a single selected contact and logs the times to the console of the DevTools in your browser.
 This is a rebuilt from my works on [WhatsAllApp](https://github.com/mathe1/WhatsAllApp-Mod) and [WhatsappTracker](https://github.com/mathe1/WhatsappTracker).
 
+##### Hint: It sometimes need update the Classnames when there is an update of WhatsappApp. Please write a ticket, if anything doesn't work!
+
 - It plays an audio signal when the contact comes online and when left. 
 - It also plays an audio signal when the contact has seen your message (if blue checks are enabled, v1.1)
 - And now (v1.1) you can hear it when the contact writes his message.
@@ -11,8 +13,9 @@ This is a rebuilt from my works on [WhatsAllApp](https://github.com/mathe1/Whats
 - v1.8: statistics for nerds ;-) length of message / how many emojis / photo, with text and emoji? / audio, how duration?
 - v1.9: detect sticker; If you set a fav contacts, you may switch to other but looging only your fav!
 - v1.11: log a keepAlive-ping, so you check that browser is working correct, if no ping after defined period, the browser could be crashed or anything is wrong with the PC...
-- v1.12: NEW: monitoring Instagram-Online status too. NEW: log the recalled messages of your friend (only the last message; not checked but theoretically it should work ;-) ).
+- v1.12: NEW: monitoring Instagram-Online status too. NEW: log the recalled messages of your friend.
 - v1.20: Updated the ClassNames; New function: logging when somebody posted a new status, and when you viewed it. Maybe interesting?
+- v1.21: bugfix: when the favorite contact have no profil photo. Set variable "altfav" to the fav's name like shown in header title - else no monitoring! This is a backup solution, an alternative. You have to change the variable when edited the contact's name on your smartphone, too.
 - It displays also in the right edge of the chat header some information:
 
 While contact is online:
@@ -33,8 +36,6 @@ Offline 15:18:21 since 74 Minutes, 8 Secounds.
 
 ##### Hint: you may use the webserver logging...
 This is useful to have access and to show alltimes the activities on your smartphone browser, simple download and view the text log.
-
-##### Hint: It sometimes need update the Classnames when there is an update of WhatsappApp.
 
 Example:
 ```
@@ -103,11 +104,11 @@ Example
 ```
 18:07:34 *i* reload page
 Instagram-Ping (*i* refresh) =180
-18:07:43 *i* refresh 1
+18:07:43 *i* refresh 
 18:07:47 *i* (friend)Vor 5 Std. aktiv
-18:10:47 *i* refresh 2
+18:10:47 *i* refresh 
 18:11:09 *i* (friend)Jetzt aktiv
-18:13:47 *i* refresh 3
+18:13:47 *i* refresh 
 ```
 
 ##### Hint
