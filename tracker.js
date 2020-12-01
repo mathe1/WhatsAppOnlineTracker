@@ -5,6 +5,7 @@
 // ******* Your private settings
 
 var fav     = ""; // without leading 0 or country number e.g. +49 (germany)
+var altfav  = ""; // when user have no profile photo
 var i_fav   = ""; // your fav nickname to monitoring on instagram
 
 //  you may also use your own webspace for central logging
@@ -44,7 +45,7 @@ var SeenClass          = "_2XORi"; //checks are blue at contact ladder
 //messages
 var textmessageClass   = "_1wlJG";
 var voicemessageClass  = "_3s69f";
-var photomessageClass  = "_3QMia"; //maybe  _3kSha
+var photomessageClass  = "_3kSha"; //don't work: _3QMia
 var stickerClass       = "_23kzp";
 var msgRecalledClass   = "_1qQEf"; //appears when a message recalled (deleted from feed)
 
@@ -102,19 +103,31 @@ function ClickContact(nr) {
  try {   
    var imgs=document.getElementsByTagName('img');
    let i=0;
-   while (imgs[i].src.indexOf(nr+'%40c.us')<0) i++;
-   //var node=imgs[i].parentElement.parentElement.nextElementSibling;
-   var node=imgs[i].parentElement.parentElement.parentElement.parentElement;
-   favname=imgs[i].parentElement.parentElement.nextSibling.firstElementChild.firstElementChild.firstElementChild.firstElementChild.title;
-   console.log('Favname is "'+favname+'"; logging is locked to this name.');
+   try { 
+     while (imgs[i].src.indexOf(nr+'%40c.us')<0) i++; 
+     var node=imgs[i].parentElement.parentElement.parentElement.parentElement;
+     favname=imgs[i].parentElement.parentElement.nextSibling.firstElementChild.firstElementChild.firstElementChild.firstElementChild.title;   
+     console.log('Favname is "'+favname+'"; logging is locked to this name.');
+   } 
+   catch(e) {
+     favname=altfav;
+     consolelog('Problem: Fav has no profil photo!');
+     if (favname=="") alert("WhatsAppInstOnlineTracker says: Your Fav can't monitoring. There is no profil photo!\nSet variable 'altfav' to your favorite's full title like shown on headline!");
+     else console.log('Favname is "'+favname+'" (set by altfav); logging is locked to this name.');
+   }
    
-   node.click(); // doesn't work -> false
+   if (node) node.click(); // doesn't work -> false
    //should check here for worked..
    var chkresult='failed';
    console.log('Autoclick '+nr+' '+chkresult);
    if (chkresult=='done') {favswitch=0; autoclicked=true} else favswitch=2; 
    return; 
- } catch(e) {return;}
+ } catch(e) {
+    favswitch=2;
+    _play('alertc');
+    consolelog('Error: Fav not found!');
+    return;
+   }
 }
 
 function SetStatus(x) {
@@ -543,13 +556,13 @@ setInterval(function() {        //WhatsAppTracker
   if (statusinfo.innerHTML.indexOf("unread")>0) {
    if (!statusreported) { 
     statusreported=true;
-    consolelog(time + '📰 someone has posted a new status');
+    consolelog(time + ' 📰 someone has posted a new status');
     _play('news');
    }
   } else {
    if (statusreported) {
     statusreported=false;
-    consolelog(time + '📰 you have viewed the status')
+    consolelog(time + ' 📰 you have viewed the status')
    }
   } 
 
