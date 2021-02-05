@@ -1,5 +1,5 @@
 // https://github.com/mathe1/WhatsAppOnlineTracker + Instagram
-// Android-WA 2.20.205.16 - web 2.2047.11
+// Android-WA 2.21.1.16 - web 2.2102.9
 // Edit the Classnames when script don't work
 
 // ******* Your private settings
@@ -111,7 +111,7 @@ function ClickContact(nr) {
    } 
    catch(e) {
      favname=altfav;
-     consolelog('Problem: Fav has no profil photo!');
+     //consolelog('Problem: Fav has no profil photo!');
      if (favname=="") alert("WhatsAppInstOnlineTracker says: Your Fav can't monitoring. There is no profil photo!\nSet variable 'altfav' to your favorite's full title like shown on headline!");
      else console.log('Favname is "'+favname+'" (set by altfav); logging is locked to this name.');
    }
@@ -572,10 +572,13 @@ setInterval(function() {        //WhatsAppTracker
 if (document.URL.indexOf("whatsapp")>0) { 
   msg_seen=1; //avoid false detection at 1st time open the contact
   //Show WA-web version
-  var t=document.scripts[document.scripts.length-1].text;
-    t=t.slice(t.indexOf("crashlogs")-40,t.indexOf("crashlogs"));
-    t=t.slice(t.indexOf("=")+2,t.indexOf('",',t));
-  consolelog("WhatsApp-web Version: "+t); 
+  var ver= new XMLHttpRequest();
+  ver.open("GET","https://web.whatsapp.com/check-update?version=1&platform=web");
+  ver.addEventListener('loadend', function (ver) {
+    var j=JSON.parse(ver.target.response);
+    consolelog("WhatsApp-web Version: "+j["currentVersion"]);
+  });
+  ver.send();
   if (ping!=0) consolelog("Ping ("+pings+") ="+ping);
 }
 else 
