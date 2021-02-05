@@ -70,6 +70,7 @@ You may use a tool to check this data for special alert...
 
 If you set the ping variable to 0, "alive" will not logged; each other value will enable the logging.
 This is independent of the status checker, which is executed every second.
+This is useful because the alert of disconnection (computer) often ends later than in reality. When "alive" is logged at web, the computer isn't disconnected, but Whatsapp informer didn't recognize yet.
 
 ### Nerdistics
 This is an artificial word for "Nerd" and "Statistics" ;-)
@@ -120,6 +121,7 @@ As the website crashed, the interval execute ends. As the PC goes offline or shu
 - wish: manage switching contacts (1st step done in v1.9)
 - bug: if scrolling/jump in/to older messages, the detection logging these old messages, because the feed loading looks for the extension like new messages.
 - suspect: Emojis are double counting sometimes
+- idea: logging the timestamp when fav contact change its profil photo and download it 
 - problem: vm() logged without duration, maybe duration will display short time later after appear the player container
 - problem without solution until now: messages and "seen" flag will set only when you look at your contact on your smartphone. Then it synchronize with browser and there the seen-flag sets. In reality the message may have seen much earlier before! It seems, the browser goes to a sleep mode after a while (Edge browser in my case).
 
