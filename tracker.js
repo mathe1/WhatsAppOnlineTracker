@@ -282,6 +282,23 @@ function checkNewMsg(dtime) {
  //initial
  if (msg_last_id=='') {
    msg_last_id=cL.lastChild.dataset.id;
+   var v=document.getElementsByClassName(SeenClassContainer);
+   if (v.length>0) {
+    wrotetime=0;
+    if (v[v.length-1].getElementsByClassName(SeenClass).length>0) msg_seen=1
+    else {
+     msg_seen=0;
+     var ts=v[v.length-1].parentElement.firstElementChild.innerText;
+     var today=dtime.toISOString().substr(0,11);
+     if (ts.indexOf(' ')>0) {
+      var h=0; //09:21 AM vs. 09:21 PM
+      if (ts.indexOf('PM')>0) h=12;
+      ts=ts.substr(0,5).trim(); if (ts.length==4) ts="0"+ts;
+      ts=today+(parseInt(ts.substr(0,2))+h)+":"+ts.substr(3)+":00Z";  
+     } else ts=today+ts+":00Z";
+     wrotetime=new Date(ts); //better: read time-label
+    }
+   }  
    return;
  }
 
@@ -570,7 +587,7 @@ setInterval(function() {        //WhatsAppTracker
 
 //some inits
 if (document.URL.indexOf("whatsapp")>0) { 
-  msg_seen=1; //avoid false detection at 1st time open the contact
+  msg_last_id=""; //for msg_seen-status at 1st time open the contact
   //Show WA-web version
   var ver= new XMLHttpRequest();
   ver.open("GET","https://web.whatsapp.com/check-update?version=1&platform=web");
