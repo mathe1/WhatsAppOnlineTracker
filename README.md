@@ -31,11 +31,29 @@ Offline 15:18:21 since 74 Minutes, 8 Secounds.
 - Let your browser be in developer mode and "load unpacked extension"
 - open your web.whatsapp.com and login
 - select a contact
-- open the Devtools for this website
-- go to console tab
 
-##### Hint: you may use the webserver logging...
-This is useful to have access and to show alltimes the activities on your smartphone browser, simple download and view the text log.
+## How to view the logging
+- open the Devtools for this website
+- go to console tab and show the log, you may copypaste the lines or save to file.
+
+## How to view the logging in most comfortable way
+- use a raspberry pi (or similar mini computer where you can run a browser app) as stand-alone-logger.
+- Here you use Chrome-Browser in the same way like descripted above.
+
+In my case I use my raspi with Chrome, and the VNC server for remote support.
+
+- Setup the tracker.js to your webspace (variable xhrURLw), define a hash (hash; it is like a password to log only your own data, filtering out any alien request - better you define a secret subdomain for that; and put there the index.php), a favorite contact (fav (=phone number), altfav (=nickname), enable weblogging (autolog_web=true), disable local logging (autolog_local=false; if you have no webserver running on localhost). Then save your prepared js-file.
+- also setup the index.php to your hash and store the file (webspace or local).
+- Start your browser and open the web.whatsapp.com, then login and click on favorite contact
+- for listen the audio-events plug some speaker on your raspi's audio plug - or connect bluetooth speakers
+- connect with VNC viewer (with smartphone app or the windows version) for support on the raspi.
+E.g. you wish to disable the audioplaying. Then right click on the Tab, select this function from menu. Do that again to enable the audio.
+
+Because logging to your webspace, you are able to show the logs with your smartphone.
+The generated textfiles named trackYYMMDD.txt - e.g. **https: // secret. example .com / track210217.txt**
+Change that in index.php if wished.
+
+### Content of log-files
 
 Example:
 ```
@@ -120,7 +138,7 @@ As the website crashed, the interval execute ends. As the PC goes offline or shu
 - wish: would nice to autoclick my favorite contact at startup.. (works fine for Instagram)
 - wish: manage switching contacts (1st step done in v1.9)
 - bug: if scrolling/jump in/to older messages, the detection logging these old messages, because the feed loading looks for the extension like new messages.
-- suspect: Emojis are double counting sometimes
+- suspect: Emojis are double counting sometimes -> this is because some Emoji have a gender char, so there are 2 char, but not visible for user. You can see that, when copy a message and paste in a textfield external from WhatsApp. Maybe I fix that next time.
 - idea: logging the timestamp when fav contact change its profil photo and download it 
 - problem: vm() logged without duration, maybe duration will display short time later after appear the player container
 - problem without solution until now: messages and "seen" flag will set only when you look at your contact on your smartphone. Then it synchronize with browser and there the seen-flag sets. In reality the message may have seen much earlier before! It seems, the browser goes to a sleep mode after a while (Edge browser in my case).
