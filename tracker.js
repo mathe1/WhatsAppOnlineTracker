@@ -1,5 +1,5 @@
 // https://github.com/mathe1/WhatsAppOnlineTracker + Instagram
-// Android-WA 2.21.1.16 - web 2.2102.9
+// Android-WA 2.21.2.18 - web 2.2104.10
 // Edit the Classnames when script don't work
 
 // ******* Your private settings
@@ -313,8 +313,9 @@ function checkNewMsg(dtime) {
          msg_was='';
        }
        else {
-         if (isOnline) consolelog(timeformat(dtime)+' < Message IN while friend online'+nerdistics(cL.lastChild,true),true);
-         else consolelog(timeformat(dtime)+' < Message IN from external'+nerdistics(cL.lastChild,true),true);
+         var wfo="";
+         if (isOnline) wfo=" while friend online"; 
+         consolelog(timeformat(dtime)+' < Message IN'+wfo+nerdistics(cL.lastChild,true),true);
        } 
        newId=true;
      }  
@@ -326,13 +327,17 @@ function checkNewMsg(dtime) {
          msg_seen=1;
          // no need to store last message content - you know, what you wrote
        }
-       else {
-         if (isOnline) consolelog(timeformat(dtime)+' > You sent a Message OUT while friend online'+nerdistics(cL.lastChild,false),true);
-         else consolelog(timeformat(dtime)+' > You sent a Message OUT'+nerdistics(cL.lastChild,false),true);
-         msg_seen=0;
-         wrotetime = dtime;
-       }  
-       newId=true;
+       else 
+        if (cL.lastChild.getElementsByClassName(SeenClassContainer).length>0) {
+          var wfo="";
+          if (isOnline) wfo=" while friend online"; 
+          consolelog(timeformat(dtime)+' > You sent a Message OUT'+wfo+nerdistics(cL.lastChild,false),true);
+          msg_seen=0;
+          wrotetime = dtime;
+        } 
+        else consolelog(timeformat(dtime)+' ** Security number has changed **',true);
+
+      newId=true;
      }  
    }
    if (newId) msg_last_id=cL.lastChild.dataset.id;
