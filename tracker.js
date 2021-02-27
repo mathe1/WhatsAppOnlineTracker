@@ -1,5 +1,5 @@
 // https://github.com/mathe1/WhatsAppOnlineTracker + Instagram
-// Android-WA 2.21.2.18 - web 2.2104.10
+// Android-WA 2.21.3.19 - web 2.2106.5
 // Edit the Classnames when script don't work
 
 // ******* Your private settings
@@ -31,23 +31,23 @@ var i_pings="*i* refresh";
 // ******* Change the other settings only if you know, what you doing
 
 //header left
-var StatusInformer     = "_2wfYK"; //ring with dot of new status from anyone
-var phonestatusClass   = "_1UGDt"; //shows the sign and yellow "disconnected" hint 
-var forDesktopClass    = "_1oIRX"; //alert but only for desktop notification
+var StatusInformer     = "_2n-zq" ; //ring with dot of new status from anyone
+var phonestatusClass   = "ns-Tk" ; //shows the sign and yellow "disconnected" hint 
+var forDesktopClass    = "_1Lctt" ; //alert but only for desktop notification
 //header upper chatarea
-var ContactNameClass   = "YEe1t"; //is right from the contact's profile picture in the headline
-var OnlineLabelClass   = "_3Id9P"; //is there in the headline under the contact's name 
-var ToolsClass         = "VPvMz"; //div for right side at 3dots
+var ContactNameClass   = "_2KQyF" ; //is right from the contact's profile picture in the headline
+var OnlineLabelClass   = "_7yrSq" ; //is there in the headline under the contact's name 
+var ToolsClass         = "_1IeOz" ; //div for right side at 3dots
 //chatarea
-var msgContainerClass  = "tSmQ1";
-var SeenClassContainer = "_2v8yt"; //highlighted contact.. has seen the message
-var SeenClass          = "_2XORi"; //checks are blue at contact ladder
+var msgContainerClass  = "_11liR" ;
+var SeenClassContainer = "_2nWgr" ; //highlighted contact.. has seen the message
+var SeenClass          = "_1RD_6" ; //checks are blue at contact ladder
 //messages
-var textmessageClass   = "_1wlJG";
-var voicemessageClass  = "_3s69f";
-var photomessageClass  = "_3kSha"; //don't work: _3QMia
-var stickerClass       = "_23kzp";
-var msgRecalledClass   = "_1qQEf"; //appears when a message recalled (deleted from feed)
+var textmessageClass   = "_1bR5a" ;
+var voicemessageClass  = "_1RXxK" ;
+var photomessageClass  = "_1VwF0" ; 
+var stickerClass       = "_3wSPP" ;
+var msgRecalledClass   = "q1nW8" ; //appears when a message recalled (deleted from feed)
 
 //InstagramClasses
 var i_contact  = "DPiy6";
