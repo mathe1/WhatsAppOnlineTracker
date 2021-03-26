@@ -1,5 +1,5 @@
 // https://github.com/mathe1/WhatsAppOnlineTracker + Instagram
-// Android-WA 2.21.3.19 - web 2.2106.5
+// Android-WA 2.21.3.19 - web 2.2108.8
 // Edit the Classnames when script don't work
 
 // ******* Your private settings
@@ -43,7 +43,7 @@ var msgContainerClass  = "_11liR" ;
 var SeenClassContainer = "_2nWgr" ; //highlighted contact.. has seen the message
 var SeenClass          = "_1RD_6" ; //checks are blue at contact ladder
 //messages
-var textmessageClass   = "_1bR5a" ;
+var textmessageClass   = "_3ExzF" ;
 var voicemessageClass  = "_1RXxK" ;
 var photomessageClass  = "_1VwF0" ; 
 var stickerClass       = "_3wSPP" ;
