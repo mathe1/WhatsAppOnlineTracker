@@ -1,22 +1,41 @@
 // https://github.com/mathe1/WhatsAppOnlineTracker + Instagram
-// Android-WA 2.21.3.19 - web 2.2108.8
+// Android-WA 2.21.13.28 - web 2.2126.11
 // Edit the Classnames when script don't work
 
 // ******* Your private settings
 
-var fav     = ""; // without leading 0 or country number e.g. +49 (germany)
-var altfav  = ""; // when user have no profile photo
-var i_fav   = ""; // your fav nickname to monitoring on instagram
+var profile=1; //you may switch easy to another config
+if (profile==0) {
+var i_fav  = "instagrambuddy";
+var hash   ="12345"; //for your logger
+var logger = "index.php"; //php-file on server
+var fav    = "1234567890"; //part of phone number
+var altfav = "Girl"; //contact name
+}
+else
+{
+var i_fav  = "instagrambuddy2";
+var hash   = "67890abc"; //for a 2.logger
+var logger = "index1.php"; //another php-file maybe on same webspace
+var fav    = "1122334455";
+var altfav = "Boy";
+} 
+//var autolog_local = true;
+var xhrURLw="https://your-web-space.xyz/"+logger;
+
+//var fav     = ""; // without leading 0 or country number e.g. +49 (germany)
+//var altfav  = ""; // when user have no profile photo
+//var i_fav   = ""; // your fav nickname to monitoring on instagram
 
 //  you may also use your own webspace for central logging
 //  Set to false, if not wished
-var autolog_web   = false;
+var autolog_web   = true;
 var autolog_local = false;
 var xhrURL="http://localhost";
-var xhrURLw ="https://your-webspace.xyz"; //for online logging
+//var xhrURLw ="https://your-webspace.xyz"; //for online logging
 //  set any authorisation when use an online webserver, so avoid false data
 //  this "hash" write also inside the index.php, else no logging 
-var hash    ="711vJy"; //like a password
+//var hash    ="711vJy"; //like a password
 
 //if you need a non-acustic signal to the log, that your PC, Browser is working correct
 //set ping to value > 0 (secounds for send that signal) // it simple counts up in pingc
@@ -31,23 +50,24 @@ var i_pings="*i* refresh";
 // ******* Change the other settings only if you know, what you doing
 
 //header left
-var StatusInformer     = "_2n-zq" ; //ring with dot of new status from anyone
-var phonestatusClass   = "ns-Tk" ; //shows the sign and yellow "disconnected" hint 
-var forDesktopClass    = "_1Lctt" ; //alert but only for desktop notification
+var StatusInformer     = "_26lC3"; //ring with dot of new status from anyone
+var phonestatusClass   = "_384go"; //shows the sign and yellow "disconnected" hint 
+var forDesktopClass    = "_1Yy79"; //alert but only for desktop notification
 //header upper chatarea
-var ContactNameClass   = "_2KQyF" ; //is right from the contact's profile picture in the headline
-var OnlineLabelClass   = "_7yrSq" ; //is there in the headline under the contact's name 
-var ToolsClass         = "_1IeOz" ; //div for right side at 3dots
+var ContactNameClass   = "_21nHd"; //parent of span-tag with title="<favname>" / is right from the contact's profile picture in the headline
+var OnlineLabelClass   = "_2YPr_"; //is there in the headline under the contact's name 
+var ToolsClass         = "_1yNrt"; //div for right side at 3dots
 //chatarea
-var msgContainerClass  = "_11liR" ;
-var SeenClassContainer = "_2nWgr" ; //highlighted contact.. has seen the message
-var SeenClass          = "_1RD_6" ; //checks are blue at contact ladder
+var msgContainerClass  = "y8WcF";
+var SeenClassContainer = "_2F01v"; //highlighted contact.. has seen the message
+var SeenClass          = "_3l4_3"; //checks are blue at contact ladder
 //messages
-var textmessageClass   = "_3ExzF" ;
-var voicemessageClass  = "_1RXxK" ;
-var photomessageClass  = "_1VwF0" ; 
-var stickerClass       = "_3wSPP" ;
-var msgRecalledClass   = "q1nW8" ; //appears when a message recalled (deleted from feed)
+var textmessageClass   = "_1Gy50"; //child div after <div class="copyable-text" data-pre-plain-text...
+var voicemessageClass  = "_2j9ZT"; //length-label e.g. 0:07
+var photomessageClass  = "_1WrWf"; //parent div of img-tag
+var stickerClass       = "_3mPXD"; //img
+var msgRecalledClass   = "_2T3DS"; //appears when a message recalled (deleted from feed)
+var missedVCallClass   = "_129rK"; //div above <span data-testid='miss_video'...
 
 //InstagramClasses
 var i_contact  = "DPiy6";
@@ -182,7 +202,12 @@ function consolelog(msg,silent,f_alive,alive_log) {
 // silent=true: plays no audio
 // f_alive: name of a separate loglife   nee. das muss in der index.php definiert werden...
 // alive_log=true: append the separate logfile; =false: writes a single line of last alive moment
-
+ function SetHeader(o) {
+  o.setRequestHeader("Content-Type", "text/html; charset-=utf-8");
+  o.setRequestHeader("Cache-Control","no-cache");
+  o.setRequestHeader("Hash", hash);
+  o.setRequestHeader("passw","no-cache");
+ }
   var date = new Date();
   var time = timeformat(date);
  console.log(msg);
@@ -205,6 +230,7 @@ function consolelog(msg,silent,f_alive,alive_log) {
     }
   }
   xhr.open("GET", xhrURL+"?"+hash+"&"+encodeURI(msg));
+  //SetHeader(xhr);
   if (xhr.readyState==xhr.OPENED) xhr.send();
  }
   
@@ -227,6 +253,7 @@ function consolelog(msg,silent,f_alive,alive_log) {
     }
   }
   xhro.open("GET", xhrURLw+"?"+hash+"&"+encodeURI(msg));
+  //SetHeader(xhro);
   if (xhro.readyState==xhro.OPENED) xhro.send();
  }
 }
@@ -237,6 +264,8 @@ function nerdistics(node,got) {
  var ph=node.getElementsByClassName(photomessageClass)[0];
  var vm=node.getElementsByClassName(voicemessageClass)[0];
  var st=node.getElementsByClassName(stickerClass)[0];
+ var vc=node.getElementsByClassName(missedVCallClass)[0];
+ if (st) ph=undefined;
  if (text) {                               
    var c=text.innerText.length;
    if (got==true) msg_was = text.innerText; //store the message
@@ -250,6 +279,8 @@ function nerdistics(node,got) {
  if (vm) o=" vm("+vm.innerText+")"; //voicemessage-length min:sec
  else 
  if (st) o=" sticker"; //Sticker
+ else 
+ if (vc) o=" vc("+vc.nextElementSibling.innerText+")"; //Videocall
  else o=" xx(unknown)"; //maybe Video, GIF, ..?!
  return o;
 }
@@ -336,8 +367,8 @@ function checkNewMsg(dtime) {
           wrotetime = dtime;
         } 
         else consolelog(timeformat(dtime)+' ** Security number has changed **',true);
-
-      newId=true;
+         
+       newId=true;
      }  
    }
    if (newId) msg_last_id=cL.lastChild.dataset.id;
@@ -482,6 +513,7 @@ setInterval(function() {        //WhatsAppTracker
   if (document.getElementById("startup")!=null) return;
   if (fav!='') if (!autoclicked && favswitch==-1) ClickContact(fav); //after wa-startup
   if (document.getElementsByClassName(msgContainerClass).length==0) return;
+  
   var date = new Date();
   var time = timeformat(date);
   
@@ -491,7 +523,7 @@ setInterval(function() {        //WhatsAppTracker
   try {
    var ctc = document.getElementsByClassName(ContactNameClass);
    act_contact = ctc[0].firstElementChild.title;
-  } catch(err) {act_contact = 'started!'; } 
+  } catch(err) {consolelog("ContactNameClass may be changed!"); act_contact = 'started!'; } 
 
   if (fav!='') {
    if (favname=='') return;
