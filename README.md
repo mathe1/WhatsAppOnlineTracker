@@ -2,6 +2,9 @@
 This extension looking for the "online" label of a single selected contact and logs the times to the console of the DevTools in your browser.
 This is a rebuilt from my works on [WhatsAllApp](https://github.com/mathe1/WhatsAllApp-Mod) and [WhatsappTracker](https://github.com/mathe1/WhatsappTracker).
 
+### WhatsApp Beta for multi-devices
+Check out the [issue](https://github.com/mathe1/WhatsAppOnlineTracker/issues/7) and look my the solution in the [linux-folder](https://github.com/mathe1/WhatsAppOnlineTracker/tree/master/linux).
+
 ##### Hint: It sometimes need update the Classnames when there is an update of WhatsappApp. Please write a ticket, if anything doesn't work!
 
 - It plays an audio signal when the contact comes online and when left. 
