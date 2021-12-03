@@ -29,3 +29,10 @@ After edit to your own purpose, open a terminal window and run the script
   `bash ./waclick.sh`
 
 The script ends when you click into another window.
+
+## Remarks
+If you use this, you will alltime show "online" for your contacts.
+New messages from the contact you monitoring will not notify at your smartphone, because you have seen even in the desktop app. Late answering could give your contact bad feelings...
+
+I also found a new issue:
+After a while the desktop app does not actulize the online lable anymore - you have to reload the page.
